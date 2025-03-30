@@ -4,6 +4,8 @@
 @tailwind utilities;
 
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&display=swap');
 
 @layer base {
   :root {
@@ -59,6 +61,21 @@
 
   .photo-frame img {
     @apply rounded-sm z-10 relative;
+  }
+
+  .polaroid-frame {
+    @apply inline-block;
+    transform-origin: center;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(0, 0, 0, 0.05);
+  }
+
+  .polaroid-frame:hover {
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(0, 0, 0, 0.08);
+  }
+
+  .font-handwriting {
+    font-family: 'Caveat', cursive;
+    font-size: 1.4rem;
   }
 
   .counter-box {

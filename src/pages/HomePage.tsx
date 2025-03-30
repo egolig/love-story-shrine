@@ -14,10 +14,10 @@ const HomePage = () => {
   }, []);
 
   return (
-    <div className={`transition-opacity duration-1000 ${loaded ? 'opacity-100' : 'opacity-0'}`}>
-      <header className="bg-white shadow-sm py-4">
+    <div className={`transition-opacity duration-1000 ${loaded ? 'opacity-100' : 'opacity-0'} bg-love-200 min-h-screen`}>
+      <header className="bg-white shadow-md py-6 rounded-b-3xl">
         <div className="container mx-auto px-4">
-          <h1 className="text-2xl md:text-3xl text-center text-love-500">
+          <h1 className="text-3xl md:text-4xl text-center font-bold text-love-500">
             Seni Çok Seviyorum
             <br />
             <span className="text-primary">İrem Atalar❤️</span>
@@ -25,10 +25,10 @@ const HomePage = () => {
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-6 max-w-2xl">
-        <div className="bg-white p-6 rounded-xl shadow-md mb-8">
-          <h2 className="text-2xl text-center mb-4 text-love-600">Sevgilim,</h2>
-          <p className="text-center mb-6">
+      <main className="container mx-auto px-4 py-8 max-w-2xl">
+        <div className="bg-white p-6 rounded-2xl shadow-lg mb-8">
+          <h2 className="text-2xl text-center mb-4 text-love-600 font-bold">Sevgilim,</h2>
+          <p className="text-center mb-6 text-lg">
             Bu üç aylık yolculuğumuzda seninle geçirdiğim her anın kıymetini biliyorum. 
             Hayatıma girdiğin günden beri her şey daha güzel, daha anlamlı. 
             Bu özel günde sana olan sevgimi bu küçük sürprizle göstermek istedim.

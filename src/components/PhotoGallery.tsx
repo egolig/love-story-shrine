@@ -1,5 +1,6 @@
 
 import { Card } from '@/components/ui/card';
+import { motion } from 'framer-motion';
 
 const PhotoGallery = () => {
   const photos = [
@@ -26,22 +27,31 @@ const PhotoGallery = () => {
   ];
 
   return (
-    <div className="my-8">
-      <div className="grid grid-cols-1 gap-12">
+    <div className="my-12">
+      <h2 className="text-center text-2xl font-bold text-love-500 mb-8">Anılarımız</h2>
+      <div className="grid grid-cols-1 gap-16">
         {photos.map((photo, index) => (
-          <Card key={index} className="overflow-hidden bg-transparent border-0 shadow-none">
-            <div className="photo-frame mx-auto max-w-md relative">
-              <img 
-                src={photo.src} 
-                alt={`Anımız ${index + 1}`} 
-                className="w-full"
-              />
-              <div className="absolute bottom-0 left-0 right-0 bg-black/30 p-3 text-white">
-                <p className="text-center font-medium">{photo.caption}</p>
+          <motion.div 
+            key={index}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: index * 0.1 }}
+            viewport={{ once: true }}
+            className="flex justify-center"
+          >
+            <div className="polaroid-frame max-w-xs transform rotate-1 hover:rotate-0 transition-all duration-300">
+              <div className="bg-white p-3 pt-4 shadow-xl rounded-sm">
+                <img 
+                  src={photo.src} 
+                  alt={`Anımız ${index + 1}`} 
+                  className="w-full h-64 object-cover"
+                />
+                <div className="pt-4 pb-3 px-2">
+                  <p className="text-center font-handwriting text-gray-800">{photo.caption}</p>
+                </div>
               </div>
             </div>
-            <p className="mt-4 text-center text-xl text-love-500">{photo.caption}</p>
-          </Card>
+          </motion.div>
         ))}
       </div>
     </div>
