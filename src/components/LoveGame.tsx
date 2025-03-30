@@ -120,7 +120,7 @@ const LoveGame = () => {
                 Ödül olarak benim sonsuz aşkımı ve öpücüğümü kazandın!
               </p>
               <div className="flex justify-center">
-                <span className="text-6xl animate-heart-beat">💋</span>
+                <span className="text-6xl animate-heart-beat">❤️</span>
               </div>
               <Button onClick={resetGame} className="mt-4">Tekrar Oyna</Button>
             </div>

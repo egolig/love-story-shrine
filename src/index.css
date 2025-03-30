@@ -3,7 +3,7 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Dancing+Script:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap');
 
 @layer base {
   :root {
@@ -46,10 +46,6 @@
     background-blend-mode: soft-light;
   }
 
-  .font-script {
-    font-family: 'Dancing Script', cursive;
-  }
-
   .photo-frame {
     @apply border-8 border-white shadow-lg rounded-lg relative;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(0, 0, 0, 0.05);
@@ -63,10 +59,6 @@
 
   .photo-frame img {
     @apply rounded-sm z-10 relative;
-  }
-
-  .photo-caption {
-    @apply font-script text-xl md:text-2xl text-center mt-4 text-love-500;
   }
 
   .counter-box {

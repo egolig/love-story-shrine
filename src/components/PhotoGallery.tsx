@@ -30,14 +30,16 @@ const PhotoGallery = () => {
       <div className="grid grid-cols-1 gap-12">
         {photos.map((photo, index) => (
           <Card key={index} className="overflow-hidden bg-transparent border-0 shadow-none">
-            <div className="photo-frame mx-auto max-w-md">
+            <div className="photo-frame mx-auto max-w-md relative">
               <img 
                 src={photo.src} 
                 alt={`Anımız ${index + 1}`} 
                 className="w-full"
               />
+              <div className="absolute bottom-0 left-0 right-0 bg-black/30 p-3 text-white">
+                <p className="text-center font-medium">{photo.caption}</p>
+              </div>
             </div>
-            <p className="photo-caption">{photo.caption}</p>
           </Card>
         ))}
       </div>
