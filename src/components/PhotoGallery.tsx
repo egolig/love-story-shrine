@@ -1,9 +1,12 @@
 
-import { Card } from '@/components/ui/card';
 import { motion } from 'framer-motion';
 
 const PhotoGallery = () => {
   const photos = [
+    {
+      src: "/lovable-uploads/308daa76-2a5b-40d2-8d94-b47a553a5d66.png",
+      caption: "Tüm hikayenin başlangıcı..."
+    },
     {
       src: "/lovable-uploads/c57676b4-8cd6-4c87-9b18-5213cbe2cc9b.png",
       caption: "Seni öpmeden, dokunmadan aşık oldum"

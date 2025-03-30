@@ -1,7 +1,6 @@
 
 import { useState, useEffect } from 'react';
 import LoveCounter from '@/components/LoveCounter';
-import MusicPlayer from '@/components/MusicPlayer';
 import LocationMap from '@/components/LocationMap';
 import PhotoGallery from '@/components/PhotoGallery';
 import LoveGame from '@/components/LoveGame';
@@ -37,7 +36,6 @@ const HomePage = () => {
         </div>
 
         <LoveCounter />
-        <MusicPlayer />
         <LocationMap />
         <PhotoGallery />
         <LoveGame />
