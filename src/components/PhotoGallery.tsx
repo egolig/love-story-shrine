@@ -4,11 +4,11 @@ import { Card } from '@/components/ui/card';
 const PhotoGallery = () => {
   const photos = [
     {
-      src: "/lovable-uploads/659fd6f5-d028-4b04-8907-de27a7d00c32.png",
+      src: "/lovable-uploads/c57676b4-8cd6-4c87-9b18-5213cbe2cc9b.png",
       caption: "Seni öpmeden, dokunmadan aşık oldum"
     },
     {
-      src: "/lovable-uploads/0701c091-f3c3-4814-92a8-e81da5d139be.png",
+      src: "/lovable-uploads/7d0987f3-26b7-4cc1-8410-eb5931612915.png",
       caption: "Seninle tanışmak başıma gelen en güzel şey"
     },
     {
