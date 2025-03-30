@@ -115,8 +115,8 @@ const MusicPlayer = () => {
           </div>
           
           <div className="flex-grow">
-            <h3 className="font-medium font-sans">Diğer Yarım</h3>
-            <p className="text-sm text-gray-500 font-sans">ATE</p>
+            <h3 className="font-medium font-sans">Yüreğim</h3>
+            <p className="text-sm text-gray-500 font-sans">Yüksek Sadakat</p>
             
             <div className="mt-2 w-full">
               <div className="flex justify-between text-xs text-gray-500">
@@ -174,7 +174,7 @@ const MusicPlayer = () => {
       </div>
       
       <audio ref={audioRef} preload="auto">
-        <source src="https://www.youtube.com/watch?v=GbnpMmvUTLo&pp=ygUJZGlnZXIgeWFy" type="audio/mp3" />
+        <source src="https://www.fesliyanstudios.com/musicfiles/2019-04-23_-_Trusted_Advertising_-_www.fesliyanstudios.com/83bpm.mp3" type="audio/mp3" />
         Tarayıcınız audio etiketini desteklemiyor.
       </audio>
     </div>
