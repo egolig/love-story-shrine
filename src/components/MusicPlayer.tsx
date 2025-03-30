@@ -1,24 +1,60 @@
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Play, Pause, Volume2, VolumeX } from 'lucide-react';
 
 const MusicPlayer = () => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
+  const [audioLoaded, setAudioLoaded] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const spotifyIframeRef = useRef<HTMLIFrameElement | null>(null);
 
-  const togglePlay = () => {
+  useEffect(() => {
+    // Initialize audio element
     if (audioRef.current) {
+      audioRef.current.addEventListener('canplaythrough', () => {
+        setAudioLoaded(true);
+      });
+      
+      audioRef.current.addEventListener('ended', () => {
+        setIsPlaying(false);
+      });
+      
+      audioRef.current.load();
+    }
+    
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.removeEventListener('canplaythrough', () => {});
+        audioRef.current.removeEventListener('ended', () => {});
+      }
+    };
+  }, []);
+
+  const togglePlay = () => {
+    if (audioRef.current && audioLoaded) {
       if (isPlaying) {
         audioRef.current.pause();
       } else {
-        audioRef.current.play().catch(error => {
-          console.error("Playback failed:", error);
-        });
+        const playPromise = audioRef.current.play();
+        
+        if (playPromise !== undefined) {
+          playPromise
+            .then(() => {
+              // Audio started playing successfully
+              console.log("Audio playback started successfully");
+            })
+            .catch(error => {
+              console.error("Playback failed:", error);
+              // Reset playing state if playback fails
+              setIsPlaying(false);
+            });
+        }
       }
       setIsPlaying(!isPlaying);
+    } else {
+      console.log("Audio element not ready yet");
     }
   };
 
@@ -90,7 +126,7 @@ const MusicPlayer = () => {
         ></iframe>
       </div>
       
-      <audio ref={audioRef}>
+      <audio ref={audioRef} preload="auto">
         <source src="https://cdn.discordapp.com/attachments/1070343308642742352/1231360845006225499/diger-yarim_b51cc952ff1630f.mp3" type="audio/mp3" />
         Tarayıcınız audio etiketini desteklemiyor.
       </audio>
