@@ -30,7 +30,7 @@ const LoginPage = () => {
     <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-love-200 to-secondary">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-script text-primary mb-2 animate-fade-in">Özel Anımız</h1>
+          <h1 className="text-4xl font-medium text-primary mb-2 animate-fade-in">Aşkımızın Sitesi</h1>
           <p className="text-muted-foreground">3. ay özel kutlamamıza hoş geldin</p>
         </div>
         

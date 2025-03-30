@@ -40,6 +40,7 @@ const PhotoGallery = () => {
                 <p className="text-center font-medium">{photo.caption}</p>
               </div>
             </div>
+            <p className="mt-4 text-center text-xl text-love-500">{photo.caption}</p>
           </Card>
         ))}
       </div>
