@@ -1,60 +1,71 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { Play, Pause, Volume2, VolumeX } from 'lucide-react';
+import { Play, Pause, Volume2, VolumeX, SkipBack, SkipForward } from 'lucide-react';
 
 const MusicPlayer = () => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
-  const [audioLoaded, setAudioLoaded] = useState(false);
+  const [duration, setDuration] = useState(0);
+  const [currentTime, setCurrentTime] = useState(0);
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  const spotifyIframeRef = useRef<HTMLIFrameElement | null>(null);
 
   useEffect(() => {
     // Initialize audio element
-    if (audioRef.current) {
-      audioRef.current.addEventListener('canplaythrough', () => {
-        setAudioLoaded(true);
-      });
-      
-      audioRef.current.addEventListener('ended', () => {
-        setIsPlaying(false);
-      });
-      
-      audioRef.current.load();
-    }
+    const audio = audioRef.current;
     
-    return () => {
-      if (audioRef.current) {
-        audioRef.current.removeEventListener('canplaythrough', () => {});
-        audioRef.current.removeEventListener('ended', () => {});
-      }
-    };
+    if (audio) {
+      const setAudioData = () => {
+        setDuration(audio.duration);
+      };
+
+      const setAudioTime = () => {
+        setCurrentTime(audio.currentTime);
+      };
+
+      const handleAudioEnd = () => {
+        setIsPlaying(false);
+        setCurrentTime(0);
+        if (audio) audio.currentTime = 0;
+      };
+
+      // Add event listeners
+      audio.addEventListener('loadeddata', setAudioData);
+      audio.addEventListener('timeupdate', setAudioTime);
+      audio.addEventListener('ended', handleAudioEnd);
+      
+      // Trigger loading the audio data
+      audio.load();
+
+      // Clean up event listeners
+      return () => {
+        audio.removeEventListener('loadeddata', setAudioData);
+        audio.removeEventListener('timeupdate', setAudioTime);
+        audio.removeEventListener('ended', handleAudioEnd);
+      };
+    }
   }, []);
 
   const togglePlay = () => {
-    if (audioRef.current && audioLoaded) {
+    if (audioRef.current) {
       if (isPlaying) {
         audioRef.current.pause();
+        setIsPlaying(false);
       } else {
         const playPromise = audioRef.current.play();
         
         if (playPromise !== undefined) {
           playPromise
             .then(() => {
-              // Audio started playing successfully
               console.log("Audio playback started successfully");
+              setIsPlaying(true);
             })
             .catch(error => {
               console.error("Playback failed:", error);
-              // Reset playing state if playback fails
               setIsPlaying(false);
             });
         }
       }
-      setIsPlaying(!isPlaying);
-    } else {
-      console.log("Audio element not ready yet");
     }
   };
 
@@ -65,6 +76,32 @@ const MusicPlayer = () => {
     }
   };
 
+  const restart = () => {
+    if (audioRef.current) {
+      audioRef.current.currentTime = 0;
+      if (!isPlaying) {
+        togglePlay();
+      }
+    }
+  };
+
+  // Format time in MM:SS
+  const formatTime = (time: number) => {
+    if (isNaN(time)) return "00:00";
+    
+    const minutes = Math.floor(time / 60);
+    const seconds = Math.floor(time % 60);
+    return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+  };
+
+  const handleProgressChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newTime = parseFloat(e.target.value);
+    setCurrentTime(newTime);
+    if (audioRef.current) {
+      audioRef.current.currentTime = newTime;
+    }
+  };
+  
   return (
     <div className="bg-white rounded-xl shadow-md overflow-hidden my-8">
       <div className="p-4">
@@ -80,20 +117,31 @@ const MusicPlayer = () => {
           <div className="flex-grow">
             <h3 className="font-medium font-sans">Diğer Yarım</h3>
             <p className="text-sm text-gray-500 font-sans">ATE</p>
+            
+            <div className="mt-2 w-full">
+              <div className="flex justify-between text-xs text-gray-500">
+                <span>{formatTime(currentTime)}</span>
+                <span>{formatTime(duration)}</span>
+              </div>
+              <input 
+                type="range"
+                min="0"
+                max={duration || 0}
+                value={currentTime}
+                onChange={handleProgressChange}
+                className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+              />
+            </div>
           </div>
           
           <div className="flex items-center gap-2">
             <Button 
-              onClick={toggleMute}
+              onClick={restart}
               variant="outline" 
               size="icon"
               className="rounded-full h-10 w-10 flex items-center justify-center border-love-300 hover:bg-love-100"
             >
-              {isMuted ? (
-                <VolumeX className="h-5 w-5 text-love-600" />
-              ) : (
-                <Volume2 className="h-5 w-5 text-love-600" />
-              )}
+              <SkipBack className="h-5 w-5 text-love-600" />
             </Button>
             
             <Button 
@@ -108,22 +156,21 @@ const MusicPlayer = () => {
                 <Play className="h-6 w-6 text-love-600" />
               )}
             </Button>
+            
+            <Button 
+              onClick={toggleMute}
+              variant="outline" 
+              size="icon"
+              className="rounded-full h-10 w-10 flex items-center justify-center border-love-300 hover:bg-love-100"
+            >
+              {isMuted ? (
+                <VolumeX className="h-5 w-5 text-love-600" />
+              ) : (
+                <Volume2 className="h-5 w-5 text-love-600" />
+              )}
+            </Button>
           </div>
         </div>
-      </div>
-      
-      <div className="p-4 bg-gray-50">
-        <iframe 
-          ref={spotifyIframeRef}
-          src="https://open.spotify.com/embed/track/7pOchuc40Mz0znJX50HaR5?utm_source=generator" 
-          width="100%" 
-          height="152" 
-          frameBorder="0" 
-          allowFullScreen 
-          allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
-          loading="lazy"
-          className="rounded-md"
-        ></iframe>
       </div>
       
       <audio ref={audioRef} preload="auto">
