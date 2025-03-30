@@ -38,7 +38,7 @@ const LoveCounter = () => {
   return (
     <div className="my-8">
       <h3 className="text-center text-xl font-script text-love-500 mb-4">
-        Şu tarihten beri birlikteyiz:
+        Mutluluğumun başladığı günden beri:
       </h3>
       
       <div className="flex justify-center gap-2 md:gap-4">
