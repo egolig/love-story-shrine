@@ -174,7 +174,7 @@ const MusicPlayer = () => {
       </div>
       
       <audio ref={audioRef} preload="auto">
-        <source src="https://cdn.discordapp.com/attachments/1070343308642742352/1231360845006225499/diger-yarim_b51cc952ff1630f.mp3" type="audio/mp3" />
+        <source src="https://www.youtube.com/watch?v=GbnpMmvUTLo&pp=ygUJZGlnZXIgeWFy" type="audio/mp3" />
         Tarayıcınız audio etiketini desteklemiyor.
       </audio>
     </div>
