@@ -6,7 +6,8 @@ import { X } from 'lucide-react';
 import { 
   Dialog, 
   DialogContent, 
-  DialogDescription 
+  DialogDescription,
+  DialogTitle 
 } from '@/components/ui/dialog';
 
 const PhotoGallery = () => {
@@ -90,6 +91,8 @@ const PhotoGallery = () => {
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent className="bg-white/95 backdrop-blur-md border border-pink-200 relative">
+          {/* Adding a visually hidden DialogTitle to fix accessibility warning */}
+          <DialogTitle className="sr-only">Aşk Notu</DialogTitle>
           <DialogDescription className="text-gray-800 text-lg text-center">
             {currentNote}
           </DialogDescription>

@@ -1,4 +1,3 @@
-
 import { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Play, Pause, Volume2, VolumeX, SkipBack } from 'lucide-react';
@@ -20,7 +19,7 @@ const MusicPlayer = () => {
   
   useEffect(() => {
     // Create audio element
-    const audio = new Audio();
+    const audio = new Audio(songFile);
     audioRef.current = audio;
     
     // Set up event listeners
@@ -28,9 +27,6 @@ const MusicPlayer = () => {
     audio.addEventListener('timeupdate', handleTimeUpdate);
     audio.addEventListener('ended', handleEnded);
     audio.addEventListener('canplaythrough', handleCanPlayThrough);
-    
-    // Use the local audio file
-    audio.src = songFile;
     
     // Try to load the audio
     audio.load();
@@ -120,7 +116,6 @@ const MusicPlayer = () => {
     }
   };
   
-  // Format time in MM:SS
   const formatTime = (time: number) => {
     if (isNaN(time)) return "00:00";
     
@@ -137,14 +132,12 @@ const MusicPlayer = () => {
     audio.volume = newVolume;
     setVolume(newVolume);
     
-    // If previously muted, unmute when volume is adjusted
     if (isMuted && newVolume > 0) {
       audio.muted = false;
       setIsMuted(false);
     }
   };
   
-  // Calculate progress percentage for the Progress component
   const progressPercentage = duration > 0 ? (currentTime / duration) * 100 : 0;
   
   return (
@@ -169,7 +162,6 @@ const MusicPlayer = () => {
             <Progress value={progressPercentage} className="h-2" />
           </div>
           
-          {/* Control buttons */}
           <div className="flex justify-center items-center gap-3 mt-2">
             <Button 
               onClick={restart}
@@ -210,7 +202,6 @@ const MusicPlayer = () => {
             </Button>
           </div>
           
-          {/* Volume Slider */}
           <div className="mt-4 px-4">
             <Slider
               defaultValue={[1]}
