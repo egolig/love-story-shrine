@@ -2,15 +2,11 @@
 import { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Play, Pause, Volume2, VolumeX, SkipBack } from 'lucide-react';
-import { toast } from '@/components/ui/use-toast';
 import { Progress } from '@/components/ui/progress';
 import { Slider } from '@/components/ui/slider';
 
 // Import the actual audio file that was uploaded
 import songFile from '../assets/Ate - Diğer Yarım (Official Video).mp3';
-
-// Fallback URL for the song in case the local file doesn't work
-const FALLBACK_AUDIO_URL = "https://cdn.mp3indirdur.com.tr/dosya-indir/188811/ate-diger-yarim.mp3";
 
 const MusicPlayer = () => {
   const [isPlaying, setIsPlaying] = useState(false);
@@ -18,10 +14,7 @@ const MusicPlayer = () => {
   const [duration, setDuration] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
   const [isLoaded, setIsLoaded] = useState(false);
-  const [loadError, setLoadError] = useState(false);
   const [volume, setVolume] = useState(1);
-  // Setting useFallback to true by default to avoid loading issues
-  const [useFallback, setUseFallback] = useState(true);
   
   const audioRef = useRef<HTMLAudioElement | null>(null);
   
@@ -34,11 +27,10 @@ const MusicPlayer = () => {
     audio.addEventListener('loadedmetadata', handleLoadedMetadata);
     audio.addEventListener('timeupdate', handleTimeUpdate);
     audio.addEventListener('ended', handleEnded);
-    audio.addEventListener('error', handleError);
     audio.addEventListener('canplaythrough', handleCanPlayThrough);
     
-    // Use fallback URL directly
-    audio.src = FALLBACK_AUDIO_URL;
+    // Use the local audio file
+    audio.src = songFile;
     
     // Try to load the audio
     audio.load();
@@ -49,7 +41,6 @@ const MusicPlayer = () => {
         audio.removeEventListener('loadedmetadata', handleLoadedMetadata);
         audio.removeEventListener('timeupdate', handleTimeUpdate);
         audio.removeEventListener('ended', handleEnded);
-        audio.removeEventListener('error', handleError);
         audio.removeEventListener('canplaythrough', handleCanPlayThrough);
         
         // Stop and unload audio
@@ -83,15 +74,9 @@ const MusicPlayer = () => {
     }
   };
   
-  const handleError = (e: Event) => {
-    console.error("Audio loading error:", e);
-    setLoadError(true);
-  };
-  
   const handleCanPlayThrough = () => {
     console.log("Audio can play through");
     setIsLoaded(true);
-    setLoadError(false);
   };
   
   const togglePlay = () => {
@@ -105,11 +90,6 @@ const MusicPlayer = () => {
     } else {
       audio.play().catch(error => {
         console.error("Playback error:", error);
-        toast({
-          title: "Oynatma hatası",
-          description: "Şarkı çalınamadı. Tarayıcınız otomatik oynatmaya izin vermiyor olabilir.",
-          variant: "destructive"
-        });
       });
       setIsPlaying(true);
       console.log("Audio playing");
@@ -149,16 +129,6 @@ const MusicPlayer = () => {
     return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
   };
   
-  const handleProgressChange = (value: number[]) => {
-    const audio = audioRef.current;
-    if (!audio) return;
-    
-    const newTime = value[0];
-    audio.currentTime = newTime;
-    setCurrentTime(newTime);
-    console.log("Seek to:", newTime);
-  };
-  
   const handleVolumeChange = (value: number[]) => {
     const audio = audioRef.current;
     if (!audio || !value.length) return;
@@ -176,32 +146,6 @@ const MusicPlayer = () => {
   
   // Calculate progress percentage for the Progress component
   const progressPercentage = duration > 0 ? (currentTime / duration) * 100 : 0;
-  
-  // Use a simple audio element if we're still trying to load
-  if (!isLoaded && !loadError) {
-    return (
-      <div className="bg-white rounded-xl shadow-md overflow-hidden my-8">
-        <div className="p-6 flex flex-col items-center">
-          <div className="w-48 h-48 rounded-lg overflow-hidden mb-6">
-            <img 
-              src="/lovable-uploads/cbb7681a-ed22-49c1-aa4c-19cea252676f.png" 
-              alt="ATE - Diğer Yarım" 
-              className="w-full h-full object-cover"
-            />
-          </div>
-          
-          <div className="w-full">
-            <h3 className="font-medium font-sans text-center text-xl mb-4">ATE - Diğer Yarım</h3>
-            
-            <div className="flex items-center justify-center gap-2 text-blue-500 mb-4">
-              <div className="animate-spin h-4 w-4 border-2 border-blue-500 rounded-full border-t-transparent"></div>
-              <span className="text-sm">Şarkı yükleniyor...</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
   
   return (
     <div className="bg-white rounded-xl shadow-md overflow-hidden my-8">
@@ -232,7 +176,7 @@ const MusicPlayer = () => {
               variant="outline" 
               size="icon"
               className="rounded-full h-10 w-10 flex items-center justify-center border-love-300 hover:bg-love-100"
-              disabled={!isLoaded || loadError}
+              disabled={!isLoaded}
             >
               <SkipBack className="h-5 w-5 text-love-600" />
             </Button>
@@ -242,7 +186,7 @@ const MusicPlayer = () => {
               variant="outline" 
               size="icon"
               className="rounded-full h-14 w-14 flex items-center justify-center border-love-300 hover:bg-love-100"
-              disabled={!isLoaded || loadError}
+              disabled={!isLoaded}
             >
               {isPlaying ? (
                 <Pause className="h-7 w-7 text-love-600" />
@@ -256,7 +200,7 @@ const MusicPlayer = () => {
               variant="outline" 
               size="icon"
               className="rounded-full h-10 w-10 flex items-center justify-center border-love-300 hover:bg-love-100"
-              disabled={!isLoaded || loadError}
+              disabled={!isLoaded}
             >
               {isMuted ? (
                 <VolumeX className="h-5 w-5 text-love-600" />
@@ -274,7 +218,7 @@ const MusicPlayer = () => {
               step={0.01}
               value={[isMuted ? 0 : volume]}
               onValueChange={handleVolumeChange}
-              disabled={!isLoaded || loadError}
+              disabled={!isLoaded}
             />
           </div>
         </div>

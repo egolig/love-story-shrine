@@ -2,7 +2,12 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useIsMobile } from '@/hooks/use-mobile';
-import { AlertDialog, AlertDialogContent, AlertDialogDescription, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
+import { X } from 'lucide-react';
+import { 
+  Dialog, 
+  DialogContent, 
+  DialogDescription 
+} from '@/components/ui/dialog';
 
 const PhotoGallery = () => {
   const isMobile = useIsMobile();
@@ -47,6 +52,10 @@ const PhotoGallery = () => {
     setIsDialogOpen(true);
   };
 
+  const closeDialog = () => {
+    setIsDialogOpen(false);
+  };
+
   return (
     <div className="my-12">
       <div className="grid grid-cols-1 gap-32 md:gap-24">
@@ -79,16 +88,21 @@ const PhotoGallery = () => {
         ))}
       </div>
 
-      <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <AlertDialogContent className="bg-white/95 backdrop-blur-md border border-pink-200">
-          <AlertDialogHeader>
-            <AlertDialogTitle className="text-pink-500 text-center">❤️ Aşk Notu ❤️</AlertDialogTitle>
-            <AlertDialogDescription className="text-gray-800 text-lg text-center">
-              {currentNote}
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-        </AlertDialogContent>
-      </AlertDialog>
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent className="bg-white/95 backdrop-blur-md border border-pink-200 relative" 
+                       onClick={closeDialog}>
+          <DialogDescription className="text-gray-800 text-lg text-center">
+            {currentNote}
+          </DialogDescription>
+          
+          <button
+            onClick={closeDialog}
+            className="absolute right-4 top-4 p-1 rounded-full bg-pink-100 hover:bg-pink-200 transition-colors"
+          >
+            <X className="h-4 w-4 text-pink-500" />
+          </button>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
