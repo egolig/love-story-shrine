@@ -1,3 +1,4 @@
+
 import { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Play, Pause, Volume2, VolumeX, SkipBack, SkipForward } from 'lucide-react';
@@ -6,7 +7,7 @@ import { Slider } from '@/components/ui/slider';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { toast } from '@/hooks/use-toast';
 
-// Import the audio file, but we'll use GitHub URL in production
+// Import the audio file as fallback only
 import songFile from '../assets/Ate - Diğer Yarım (Official Video).mp3';
 
 const MusicPlayer = () => {
@@ -21,9 +22,11 @@ const MusicPlayer = () => {
   
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
-  // List of possible audio sources to try, prioritizing GitHub URLs
-  const audioSources = [
-    'https://raw.githubusercontent.com/passerbyzju/ate-diger-yarim/main/ate-diger-yarim.mp3',
+  // Primary GitHub audio source
+  const primarySource = 'https://raw.githubusercontent.com/passerbyzju/ate-diger-yarim/main/ate-diger-yarim.mp3';
+  
+  // List of fallback audio sources to try if primary fails
+  const fallbackSources = [
     'https://github.com/passerbyzju/ate-diger-yarim/raw/main/ate-diger-yarim.mp3',
     '/lovable-uploads/ate-diger-yarim.mp3',
     '/ate-diger-yarim.mp3',
@@ -42,8 +45,8 @@ const MusicPlayer = () => {
     audio.addEventListener('canplaythrough', handleCanPlayThrough);
     audio.addEventListener('error', handleAudioError);
     
-    // Try to load audio from the first source
-    tryLoadAudio(0);
+    // Try to load audio from the primary source first
+    loadAudioSource(primarySource);
     
     return () => {
       // Clean up event listeners
@@ -61,9 +64,50 @@ const MusicPlayer = () => {
     };
   }, []);
 
-  // Function to try loading audio from different sources
-  const tryLoadAudio = (index: number) => {
-    if (index >= audioSources.length) {
+  // Function to set the audio source and load it
+  const loadAudioSource = (source: string) => {
+    if (!audioRef.current) return;
+    
+    try {
+      console.log(`Loading audio source: ${source}`);
+      audioRef.current.src = source;
+      setAudioSource(source);
+      audioRef.current.load();
+      audioRef.current.crossOrigin = "anonymous"; // Add CORS support
+      setAudioError(null);
+    } catch (error) {
+      console.error("Error loading audio source:", error);
+      handleSourceFailure(source);
+    }
+  };
+  
+  // Function to handle failures and try fallback sources
+  const handleSourceFailure = (failedSource: string) => {
+    console.log(`Source failed: ${failedSource}`);
+    
+    // If primary source failed, try fallbacks
+    if (failedSource === primarySource) {
+      console.log("Primary source failed, trying fallbacks");
+      tryFallbackSources(0);
+    } else {
+      // Find the index of the failed fallback source
+      const failedIndex = fallbackSources.indexOf(failedSource);
+      if (failedIndex !== -1 && failedIndex < fallbackSources.length - 1) {
+        tryFallbackSources(failedIndex + 1);
+      } else {
+        setAudioError("Failed to load audio from any source");
+        toast({
+          title: "Audio Error",
+          description: "Unable to load the audio file. Please try again later.",
+          variant: "destructive"
+        });
+      }
+    }
+  };
+  
+  // Function to try fallback sources one by one
+  const tryFallbackSources = (index: number) => {
+    if (index >= fallbackSources.length) {
       console.error("All audio sources failed to load");
       setAudioError("Failed to load audio from any source");
       toast({
@@ -74,61 +118,17 @@ const MusicPlayer = () => {
       return;
     }
 
-    const source = audioSources[index];
-    console.log(`Trying audio source ${index + 1}/${audioSources.length}:`, source);
-    
-    // For URL sources, check if they exist first
-    if (typeof source === 'string' && (source.startsWith('/') || source.startsWith('http'))) {
-      fetch(source, { method: 'HEAD' })
-        .then(response => {
-          if (response.ok) {
-            console.log(`Source ${index + 1} exists, using:`, source);
-            loadAudioSource(source);
-          } else {
-            console.log(`Source ${index + 1} failed (${response.status}), trying next source`);
-            tryLoadAudio(index + 1);
-          }
-        })
-        .catch(error => {
-          console.error(`Error checking source ${index + 1}:`, error);
-          tryLoadAudio(index + 1);
-        });
-    } else {
-      // For imported file, try directly
-      loadAudioSource(source);
-    }
-  };
-
-  // Function to set the audio source and load it
-  const loadAudioSource = (source: string) => {
-    if (!audioRef.current) return;
-    
-    try {
-      audioRef.current.src = source;
-      setAudioSource(source);
-      audioRef.current.load();
-      audioRef.current.crossOrigin = "anonymous"; // Add CORS support
-      setAudioError(null);
-    } catch (error) {
-      console.error("Error loading audio source:", error);
-      setAudioError("Failed to load audio file");
-    }
+    const source = fallbackSources[index];
+    console.log(`Trying fallback source ${index + 1}/${fallbackSources.length}:`, source);
+    loadAudioSource(source);
   };
   
   const handleAudioError = (e: Event) => {
     const audio = e.target as HTMLAudioElement;
     console.error("Audio error:", audio.error);
     
-    // If current source failed, try the next one
-    const currentIndex = audioSources.findIndex(source => source === audioSource);
-    if (currentIndex !== -1 && currentIndex < audioSources.length - 1) {
-      console.log(`Source ${currentIndex + 1} failed to play, trying next source`);
-      tryLoadAudio(currentIndex + 1);
-      return;
-    }
-    
-    setAudioError(`Failed to play audio: ${audio.error?.message || 'Unknown error'}`);
-    setIsLoaded(false);
+    // If current source failed, try fallbacks
+    handleSourceFailure(audioSource || '');
   };
   
   const handleLoadedMetadata = () => {
@@ -173,12 +173,7 @@ const MusicPlayer = () => {
       audio.play().catch(error => {
         console.error("Playback error:", error);
         setAudioError(`Playback error: ${error.message}`);
-        
-        // If playback fails, try alternative source
-        const currentIndex = audioSources.findIndex(source => source === audioSource);
-        if (currentIndex !== -1 && currentIndex < audioSources.length - 1) {
-          tryLoadAudio(currentIndex + 1);
-        }
+        handleSourceFailure(audioSource || '');
       });
       setIsPlaying(true);
       console.log("Audio playing");
