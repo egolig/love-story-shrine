@@ -1,4 +1,3 @@
-
 import { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Play, Pause, Volume2, VolumeX, SkipBack, AlertCircle } from 'lucide-react';
@@ -224,15 +223,14 @@ const MusicPlayer = () => {
         <div className="p-6 flex flex-col items-center">
           <div className="w-48 h-48 rounded-lg overflow-hidden mb-6">
             <img 
-              src="/lovable-uploads/1098590261438951476.jpeg" 
-              alt="Diğer Yarım - Şarkı Kapağı" 
+              src="/lovable-uploads/cbb7681a-ed22-49c1-aa4c-19cea252676f.png" 
+              alt="ATE - Diğer Yarım" 
               className="w-full h-full object-cover"
             />
           </div>
           
           <div className="w-full">
-            <h3 className="font-medium font-sans text-center text-xl mb-1">ATE - Diğer Yarım</h3>
-            <p className="text-sm text-gray-500 font-sans text-center mb-4">Ses Dosyası</p>
+            <h3 className="font-medium font-sans text-center text-xl mb-4">ATE - Diğer Yarım</h3>
             
             <div className="flex items-center justify-center gap-2 text-amber-500 mb-4">
               <AlertCircle size={16} />
@@ -254,18 +252,17 @@ const MusicPlayer = () => {
   return (
     <div className="bg-white rounded-xl shadow-md overflow-hidden my-8">
       <div className="p-6 flex flex-col items-center">
-        {/* Album Cover */}
+        {/* Album Cover - Updated to use the uploaded image */}
         <div className="w-48 h-48 rounded-lg overflow-hidden mb-6">
           <img 
-            src="/lovable-uploads/1098590261438951476.jpeg" 
-            alt="Diğer Yarım - Şarkı Kapağı" 
+            src="/lovable-uploads/cbb7681a-ed22-49c1-aa4c-19cea252676f.png" 
+            alt="ATE - Diğer Yarım" 
             className="w-full h-full object-cover"
           />
         </div>
         
         <div className="w-full">
-          <h3 className="font-medium font-sans text-center text-xl mb-1">ATE - Diğer Yarım</h3>
-          <p className="text-sm text-gray-500 font-sans text-center mb-4">Ses Dosyası</p>
+          <h3 className="font-medium font-sans text-center text-xl mb-4">ATE - Diğer Yarım</h3>
           
           {useFallback && isLoaded && (
             <div className="flex items-center justify-center gap-2 text-blue-500 mb-4">
@@ -286,15 +283,6 @@ const MusicPlayer = () => {
               <span>{formatTime(duration)}</span>
             </div>
             <Progress value={progressPercentage} className="h-2" />
-            <Slider
-              defaultValue={[0]}
-              max={duration || 100}
-              step={0.1}
-              value={[currentTime]}
-              onValueChange={handleProgressChange}
-              disabled={!isLoaded || loadError}
-              className="mt-1"
-            />
           </div>
           
           {/* Control buttons */}
@@ -356,4 +344,3 @@ const MusicPlayer = () => {
 };
 
 export default MusicPlayer;
-
