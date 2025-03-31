@@ -104,37 +104,37 @@ const MusicPlayer = () => {
   
   return (
     <div className="bg-white rounded-xl shadow-md overflow-hidden my-8">
-      <div className="p-4">
-        <div className="flex items-center">
-          <div className="w-20 h-20 rounded-lg overflow-hidden mr-4">
-            <img 
-              src="/lovable-uploads/7d0987f3-26b7-4cc1-8410-eb5931612915.png" 
-              alt="Müzik Kapağı" 
-              className="w-full h-full object-cover"
+      <div className="p-6 flex flex-col items-center">
+        {/* Album Cover - Placed on top with medium size */}
+        <div className="w-48 h-48 rounded-lg overflow-hidden mb-6">
+          <img 
+            src="/lovable-uploads/7d0987f3-26b7-4cc1-8410-eb5931612915.png" 
+            alt="Müzik Kapağı" 
+            className="w-full h-full object-cover"
+          />
+        </div>
+        
+        <div className="w-full">
+          <h3 className="font-medium font-sans text-center text-xl mb-1">ATE - Diğer Yarım</h3>
+          <p className="text-sm text-gray-500 font-sans text-center mb-4">YouTube'dan MP3</p>
+          
+          <div className="mb-4 w-full">
+            <div className="flex justify-between text-xs text-gray-500">
+              <span>{formatTime(currentTime)}</span>
+              <span>{formatTime(duration)}</span>
+            </div>
+            <input 
+              type="range"
+              min="0"
+              max={duration || 0}
+              value={currentTime}
+              onChange={handleProgressChange}
+              className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
             />
           </div>
           
-          <div className="flex-grow">
-            <h3 className="font-medium font-sans">ATE - Diğer Yarım</h3>
-            <p className="text-sm text-gray-500 font-sans">YouTube'dan MP3</p>
-            
-            <div className="mt-2 w-full">
-              <div className="flex justify-between text-xs text-gray-500">
-                <span>{formatTime(currentTime)}</span>
-                <span>{formatTime(duration)}</span>
-              </div>
-              <input 
-                type="range"
-                min="0"
-                max={duration || 0}
-                value={currentTime}
-                onChange={handleProgressChange}
-                className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
-              />
-            </div>
-          </div>
-          
-          <div className="flex items-center gap-2">
+          {/* Control buttons below the progress bar */}
+          <div className="flex justify-center items-center gap-3 mt-2">
             <Button 
               onClick={restart}
               variant="outline" 
@@ -148,12 +148,12 @@ const MusicPlayer = () => {
               onClick={togglePlay}
               variant="outline" 
               size="icon"
-              className="rounded-full h-12 w-12 flex items-center justify-center border-love-300 hover:bg-love-100"
+              className="rounded-full h-14 w-14 flex items-center justify-center border-love-300 hover:bg-love-100"
             >
               {isPlaying ? (
-                <Pause className="h-6 w-6 text-love-600" />
+                <Pause className="h-7 w-7 text-love-600" />
               ) : (
-                <Play className="h-6 w-6 text-love-600" />
+                <Play className="h-7 w-7 text-love-600" />
               )}
             </Button>
             
@@ -174,8 +174,8 @@ const MusicPlayer = () => {
       </div>
       
       <audio ref={audioRef} preload="auto">
-        {/* Replace the source URL below with your uploaded MP3 file path after uploading */}
-        <source src="/lovable-uploads/your-mp3-file.mp3" type="audio/mp3" />
+        {/* You need to upload an MP3 file and change this path */}
+        <source src="/lovable-uploads/diger-yarim.mp3" type="audio/mp3" />
         Tarayıcınız audio etiketini desteklemiyor.
       </audio>
     </div>
