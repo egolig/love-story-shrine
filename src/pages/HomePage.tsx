@@ -13,7 +13,7 @@ const HomePage = () => {
   }, []);
 
   return (
-    <div className={`transition-opacity duration-1000 ${loaded ? 'opacity-100' : 'opacity-0'} bg-love-200 min-h-screen`}>
+    <div className={`transition-opacity duration-1000 ${loaded ? 'opacity-100' : 'opacity-0'} bg-love-300 min-h-screen`}>
       <header className="bg-white shadow-md py-6 rounded-b-3xl">
         <div className="container mx-auto px-4">
           <h1 className="text-3xl md:text-4xl text-center font-bold text-love-500">

@@ -25,7 +25,7 @@ const PhotoGallery = () => {
     },
     {
       src: "/lovable-uploads/14bec2d4-dfd1-4136-ba82-e88ffb1bda55.png",
-      caption: "Seni çok seviyorum"
+      caption: "Seni Çok Seviyorum Aşkımmmm"
     },
   ];
 
@@ -50,7 +50,7 @@ const PhotoGallery = () => {
                   className="w-full h-64 object-cover"
                 />
                 <div className="pt-4 pb-3 px-2">
-                  <p className="text-center font-handwriting text-gray-800">{photo.caption}</p>
+                  <p className="text-center text-gray-800">{photo.caption}</p>
                 </div>
               </div>
             </div>
