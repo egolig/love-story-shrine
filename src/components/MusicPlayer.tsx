@@ -12,11 +12,14 @@ const MusicPlayer = () => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [loadError, setLoadError] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const audioUrl = '/lovable-uploads/diger-yarim.mp3';
   
-  // Initialize audio element when component mounts
   useEffect(() => {
-    const audio = new Audio('/lovable-uploads/diger-yarim.mp3');
+    // Create audio element directly in the component
+    const audio = new Audio(audioUrl);
     audioRef.current = audio;
+    
+    console.log("Creating new audio element with source:", audioUrl);
     
     const handleLoadedData = () => {
       console.log("Audio loaded successfully, duration:", audio.duration);
@@ -36,25 +39,28 @@ const MusicPlayer = () => {
     };
     
     const handleError = (e: Event) => {
-      console.error("Audio error:", e);
+      console.error("Audio error occurred:", e);
+      console.error("Audio error code:", (e.target as HTMLAudioElement).error?.code);
+      console.error("Audio error message:", (e.target as HTMLAudioElement).error?.message);
       setLoadError(true);
       setIsLoaded(false);
       toast({
         title: "Oynatma hatası",
-        description: "Müzik dosyası yüklenemedi. Dosya yolunu kontrol edin.",
+        description: "Müzik dosyası yüklenemedi. Lütfen daha sonra tekrar deneyin.",
         variant: "destructive"
       });
     };
     
     // Add event listeners
     audio.addEventListener('loadeddata', handleLoadedData);
-    audio.addEventListener('loadedmetadata', handleLoadedData); // Try both events
+    audio.addEventListener('loadedmetadata', handleLoadedData); 
     audio.addEventListener('timeupdate', handleTimeUpdate);
     audio.addEventListener('ended', handleEnded);
     audio.addEventListener('error', handleError);
     
     // Force preload
     audio.preload = "auto";
+    
     try {
       audio.load();
       console.log("Audio loading started");
@@ -70,11 +76,15 @@ const MusicPlayer = () => {
       audio.removeEventListener('timeupdate', handleTimeUpdate);
       audio.removeEventListener('ended', handleEnded);
       audio.removeEventListener('error', handleError);
+      audioRef.current = null;
     };
-  }, []);
+  }, [audioUrl]);
   
   const togglePlay = () => {
-    if (!audioRef.current) return;
+    if (!audioRef.current) {
+      console.error("Audio element not available");
+      return;
+    }
     
     if (isPlaying) {
       audioRef.current.pause();
@@ -94,7 +104,7 @@ const MusicPlayer = () => {
             console.error("Playback failed:", error);
             toast({
               title: "Oynatma hatası",
-              description: "Tarayıcınız otomatik oynatmaya izin vermiyor olabilir.",
+              description: "Şarkı çalınamadı. Lütfen daha sonra tekrar deneyin.",
               variant: "destructive"
             });
             setIsPlaying(false);
@@ -145,7 +155,7 @@ const MusicPlayer = () => {
         {/* Album Cover */}
         <div className="w-48 h-48 rounded-lg overflow-hidden mb-6">
           <img 
-            src="/lovable-uploads/8995c772-0203-4cb0-802d-a92d1b6c4c75.png" 
+            src="/lovable-uploads/1098590261438951476.jpeg" 
             alt="Müzik Kapağı" 
             className="w-full h-full object-cover"
           />
