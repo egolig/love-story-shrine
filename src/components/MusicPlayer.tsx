@@ -4,8 +4,9 @@ import { Button } from '@/components/ui/button';
 import { Play, Pause, Volume2, VolumeX, SkipBack } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 import { Slider } from '@/components/ui/slider';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 
-// Direct import of the audio file
+// Import the audio file, but we'll use a public URL in production
 import songFile from '../assets/Ate - Diğer Yarım (Official Video).mp3';
 
 const MusicPlayer = () => {
@@ -23,12 +24,32 @@ const MusicPlayer = () => {
     // Create audio element
     const audio = new Audio();
     
-    // Set the audio source with fallback options
+    // Set the audio source with both production and development options
     try {
-      audio.src = songFile;
-      console.log("Using imported audio file:", songFile);
+      // For production, try to use the public folder
+      const publicAudioUrl = '/lovable-uploads/ate-diger-yarim.mp3';
+      
+      // Try to load from the public URL first (for production)
+      fetch(publicAudioUrl, { method: 'HEAD' })
+        .then(response => {
+          if (response.ok) {
+            console.log("Using public audio URL");
+            audio.src = publicAudioUrl;
+          } else {
+            // Fall back to imported file (for development)
+            console.log("Using imported audio file");
+            audio.src = songFile;
+          }
+          audio.load();
+        })
+        .catch(() => {
+          // Fall back to imported file if fetch fails
+          console.log("Fetch failed, using imported audio file");
+          audio.src = songFile;
+          audio.load();
+        });
     } catch (error) {
-      console.error("Error loading audio file:", error);
+      console.error("Error setting up audio:", error);
       setAudioError("Failed to load audio file");
     }
     
@@ -40,9 +61,6 @@ const MusicPlayer = () => {
     audio.addEventListener('ended', handleEnded);
     audio.addEventListener('canplaythrough', handleCanPlayThrough);
     audio.addEventListener('error', handleAudioError);
-    
-    // Try to load the audio
-    audio.load();
     
     return () => {
       // Clean up event listeners
@@ -63,6 +81,15 @@ const MusicPlayer = () => {
   const handleAudioError = (e: Event) => {
     const audio = e.target as HTMLAudioElement;
     console.error("Audio error:", audio.error);
+    
+    // Try alternative source if there's an error
+    if (audio.src.includes('lovable-uploads') && audioRef.current) {
+      console.log("Trying imported file as fallback");
+      audioRef.current.src = songFile;
+      audioRef.current.load();
+      return;
+    }
+    
     setAudioError(`Failed to play audio: ${audio.error?.message || 'Unknown error'}`);
     setIsLoaded(false);
   };
@@ -179,9 +206,9 @@ const MusicPlayer = () => {
           <h3 className="font-medium font-sans text-center text-xl mb-4">ATE - Diğer Yarım</h3>
           
           {audioError && (
-            <div className="bg-red-50 border border-red-200 text-red-600 p-2 rounded mb-4 text-sm text-center">
-              {audioError}
-            </div>
+            <Alert variant="destructive" className="mb-4">
+              <AlertDescription>{audioError}</AlertDescription>
+            </Alert>
           )}
           
           <div className="mb-4 w-full">
