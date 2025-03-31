@@ -116,7 +116,7 @@ const MusicPlayer = () => {
         
         <div className="w-full">
           <h3 className="font-medium font-sans text-center text-xl mb-1">ATE - Diğer Yarım</h3>
-          <p className="text-sm text-gray-500 font-sans text-center mb-4">YouTube'dan MP3</p>
+          <p className="text-sm text-gray-500 font-sans text-center mb-4">mp3semti.com</p>
           
           <div className="mb-4 w-full">
             <div className="flex justify-between text-xs text-gray-500">
@@ -174,7 +174,7 @@ const MusicPlayer = () => {
       </div>
       
       <audio ref={audioRef} preload="auto">
-        {/* You need to upload an MP3 file and change this path */}
+        {/* Update this source with the correct MP3 file path after downloading from mp3semti.com */}
         <source src="/lovable-uploads/diger-yarim.mp3" type="audio/mp3" />
         Tarayıcınız audio etiketini desteklemiyor.
       </audio>
