@@ -13,8 +13,8 @@ const MusicPlayer = () => {
   const [loadError, setLoadError] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   
-  // ATE - Diğer Yarım şarkısı için internet üzerinden erişilebilen bir URL kullanıyoruz
-  const audioUrl = 'https://cdn.mp3indirdur.mobi/mp3/Ate-Diger-Yarim.mp3';
+  // ATE - Diğer Yarım şarkısı için internet üzerinden erişilebilen yeni URL kullanıyoruz
+  const audioUrl = 'https://mp3indirdur.life/dinle/Ate-Diger-Yarim-221552';
   
   useEffect(() => {
     // Create audio element directly in the component
