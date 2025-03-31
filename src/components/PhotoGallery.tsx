@@ -87,7 +87,7 @@ const PhotoGallery = () => {
                   <p className="text-center text-gray-800 text-lg">{photo.caption}</p>
                 </div>
 
-                {/* Overlay and note directly on photo */}
+                {/* Overlay and note directly on photo - now using regular font */}
                 <AnimatePresence>
                   {showNote && currentIndex === index && (
                     <motion.div 
@@ -108,7 +108,7 @@ const PhotoGallery = () => {
                         >
                           <X className="h-4 w-4 text-pink-500" />
                         </button>
-                        <p className="text-center text-gray-800 font-medium pt-2" style={{ fontFamily: "'Caveat', cursive" }}>
+                        <p className="text-center text-gray-800 font-medium pt-2">
                           {currentNote}
                         </p>
                       </div>
