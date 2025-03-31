@@ -15,12 +15,23 @@ const MusicPlayer = () => {
   const [currentTime, setCurrentTime] = useState(0);
   const [isLoaded, setIsLoaded] = useState(false);
   const [volume, setVolume] = useState(1);
+  const [audioError, setAudioError] = useState<string | null>(null);
   
   const audioRef = useRef<HTMLAudioElement | null>(null);
   
   useEffect(() => {
-    // Create audio element with direct file reference
-    const audio = new Audio(songFile);
+    // Create audio element
+    const audio = new Audio();
+    
+    // Set the audio source with fallback options
+    try {
+      audio.src = songFile;
+      console.log("Using imported audio file:", songFile);
+    } catch (error) {
+      console.error("Error loading audio file:", error);
+      setAudioError("Failed to load audio file");
+    }
+    
     audioRef.current = audio;
     
     // Set up event listeners
@@ -28,6 +39,7 @@ const MusicPlayer = () => {
     audio.addEventListener('timeupdate', handleTimeUpdate);
     audio.addEventListener('ended', handleEnded);
     audio.addEventListener('canplaythrough', handleCanPlayThrough);
+    audio.addEventListener('error', handleAudioError);
     
     // Try to load the audio
     audio.load();
@@ -39,6 +51,7 @@ const MusicPlayer = () => {
         audio.removeEventListener('timeupdate', handleTimeUpdate);
         audio.removeEventListener('ended', handleEnded);
         audio.removeEventListener('canplaythrough', handleCanPlayThrough);
+        audio.removeEventListener('error', handleAudioError);
         
         // Stop and unload audio
         audio.pause();
@@ -46,6 +59,13 @@ const MusicPlayer = () => {
       }
     };
   }, []);
+  
+  const handleAudioError = (e: Event) => {
+    const audio = e.target as HTMLAudioElement;
+    console.error("Audio error:", audio.error);
+    setAudioError(`Failed to play audio: ${audio.error?.message || 'Unknown error'}`);
+    setIsLoaded(false);
+  };
   
   const handleLoadedMetadata = () => {
     const audio = audioRef.current;
@@ -74,6 +94,7 @@ const MusicPlayer = () => {
   const handleCanPlayThrough = () => {
     console.log("Audio can play through");
     setIsLoaded(true);
+    setAudioError(null);
   };
   
   const togglePlay = () => {
@@ -87,6 +108,7 @@ const MusicPlayer = () => {
     } else {
       audio.play().catch(error => {
         console.error("Playback error:", error);
+        setAudioError(`Playback error: ${error.message}`);
       });
       setIsPlaying(true);
       console.log("Audio playing");
@@ -112,6 +134,7 @@ const MusicPlayer = () => {
     if (!isPlaying) {
       audio.play().catch(error => {
         console.error("Playback error:", error);
+        setAudioError(`Playback error: ${error.message}`);
       });
       setIsPlaying(true);
     }
@@ -154,6 +177,12 @@ const MusicPlayer = () => {
         
         <div className="w-full">
           <h3 className="font-medium font-sans text-center text-xl mb-4">ATE - Diğer Yarım</h3>
+          
+          {audioError && (
+            <div className="bg-red-50 border border-red-200 text-red-600 p-2 rounded mb-4 text-sm text-center">
+              {audioError}
+            </div>
+          )}
           
           <div className="mb-4 w-full">
             <div className="flex justify-between text-xs text-gray-500">
