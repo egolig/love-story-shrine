@@ -1,3 +1,4 @@
+
 import { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Play, Pause, Volume2, VolumeX, SkipBack } from 'lucide-react';
@@ -18,7 +19,7 @@ const MusicPlayer = () => {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   
   useEffect(() => {
-    // Create audio element
+    // Create audio element with direct file reference
     const audio = new Audio(songFile);
     audioRef.current = audio;
     

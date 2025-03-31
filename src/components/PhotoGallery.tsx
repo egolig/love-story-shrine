@@ -49,8 +49,14 @@ const PhotoGallery = () => {
   ];
 
   const handlePhotoClick = (note: string) => {
-    setCurrentNote(note);
-    setIsDialogOpen(true);
+    if (isDialogOpen) {
+      // If dialog is already open, close it
+      setIsDialogOpen(false);
+    } else {
+      // Open dialog with the selected note
+      setCurrentNote(note);
+      setIsDialogOpen(true);
+    }
   };
 
   const closeDialog = () => {
@@ -90,7 +96,7 @@ const PhotoGallery = () => {
       </div>
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="bg-white/95 backdrop-blur-md border border-pink-200 relative">
+        <DialogContent className="bg-white/95 backdrop-blur-md border border-pink-200 relative" onClick={closeDialog}>
           {/* Adding a visually hidden DialogTitle to fix accessibility warning */}
           <DialogTitle className="sr-only">Aşk Notu</DialogTitle>
           <DialogDescription className="text-gray-800 text-lg text-center">
