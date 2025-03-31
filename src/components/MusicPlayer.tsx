@@ -1,3 +1,4 @@
+
 import { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Play, Pause, Volume2, VolumeX, SkipBack, AlertCircle } from 'lucide-react';
@@ -5,8 +6,8 @@ import { toast } from '@/components/ui/use-toast';
 import { Progress } from '@/components/ui/progress';
 import { Slider } from '@/components/ui/slider';
 
-// Import an audio file that we know works
-import sampleAudio from '../assets/sample-audio.mp3';
+// Import the actual audio file that was uploaded
+import songFile from '../assets/Ate - Diğer Yarım (Official Video).mp3';
 
 // Fallback URL for the song in case the local file doesn't work
 const FALLBACK_AUDIO_URL = "https://cdn.mp3indirdur.com.tr/dosya-indir/188811/ate-diger-yarim.mp3";
@@ -35,8 +36,8 @@ const MusicPlayer = () => {
     audio.addEventListener('error', handleError);
     audio.addEventListener('canplaythrough', handleCanPlayThrough);
     
-    // Try the imported sample first
-    audio.src = sampleAudio;
+    // Try the imported song file first
+    audio.src = songFile;
     
     // Try to load the audio
     audio.load();
@@ -240,7 +241,7 @@ const MusicPlayer = () => {
             
             <audio controls className="w-full">
               <source src={FALLBACK_AUDIO_URL} type="audio/mpeg" />
-              <source src={sampleAudio} type="audio/mpeg" />
+              <source src={songFile} type="audio/mpeg" />
               <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg" />
               <p>Tarayıcınız audio etiketi desteklemiyor.</p>
             </audio>
@@ -355,3 +356,4 @@ const MusicPlayer = () => {
 };
 
 export default MusicPlayer;
+
