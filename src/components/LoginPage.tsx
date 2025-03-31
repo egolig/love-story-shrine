@@ -27,17 +27,17 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-love-200 to-secondary">
+    <div className="min-h-screen flex items-center justify-center p-4 bg-[#1A1A1A] bg-pattern">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-medium text-primary mb-2 animate-fade-in">Aşkımızın Sitesi</h1>
-          <p className="text-muted-foreground">3. ay özel kutlamamıza hoş geldin</p>
+          <h1 className="text-4xl font-medium text-pink-500 mb-2 animate-fade-in">Aşkımızın Sitesi</h1>
+          <p className="text-pink-300">3. ay özel kutlamamıza hoş geldin</p>
         </div>
         
-        <Card>
+        <Card className="bg-[#222222] border-gray-700 shadow-xl">
           <CardHeader>
-            <CardTitle>Giriş</CardTitle>
-            <CardDescription>
+            <CardTitle className="text-pink-500">Giriş</CardTitle>
+            <CardDescription className="text-pink-300/70">
               Özel anılarımızı görmek için şifre gerekli
             </CardDescription>
           </CardHeader>
@@ -51,9 +51,10 @@ const LoginPage = () => {
                     placeholder="Şifre"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
+                    className="bg-[#333333] border-gray-700 text-white"
                   />
                 </div>
-                <Button type="submit" className="w-full">
+                <Button type="submit" className="w-full bg-pink-500 hover:bg-pink-600">
                   Giriş Yap
                 </Button>
               </div>
@@ -62,12 +63,12 @@ const LoginPage = () => {
           <CardFooter>
             <div className="w-full text-center">
               {showHint ? (
-                <p className="text-sm text-muted-foreground">İpucu: bizim şifremiz sevgilim</p>
+                <p className="text-sm text-pink-300/70">İpucu: bizim şifremiz sevgilim</p>
               ) : (
                 <Button 
                   variant="link" 
                   onClick={() => setShowHint(true)}
-                  className="mx-auto text-sm"
+                  className="mx-auto text-sm text-pink-300"
                 >
                   İpucu göster
                 </Button>
