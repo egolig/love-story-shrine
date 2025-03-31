@@ -2,12 +2,14 @@
 import { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Play, Pause, Volume2, VolumeX, SkipBack } from 'lucide-react';
+import { toast } from '@/components/ui/use-toast';
 
 const MusicPlayer = () => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [duration, setDuration] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
+  const [isLoaded, setIsLoaded] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
@@ -17,6 +19,8 @@ const MusicPlayer = () => {
     if (audio) {
       const setAudioData = () => {
         setDuration(audio.duration);
+        setIsLoaded(true);
+        console.log("Audio loaded successfully");
       };
 
       const setAudioTime = () => {
@@ -29,12 +33,22 @@ const MusicPlayer = () => {
         if (audio) audio.currentTime = 0;
       };
 
+      const handleError = (e: Event) => {
+        console.error("Audio error:", e);
+        toast({
+          title: "Oynatma hatası",
+          description: "Müzik dosyası yüklenemedi. Lütfen daha sonra tekrar deneyin.",
+          variant: "destructive"
+        });
+      };
+
       // Add event listeners
       audio.addEventListener('loadeddata', setAudioData);
       audio.addEventListener('timeupdate', setAudioTime);
       audio.addEventListener('ended', handleAudioEnd);
+      audio.addEventListener('error', handleError);
       
-      // Trigger loading the audio data
+      // Preload audio
       audio.load();
 
       // Clean up event listeners
@@ -42,6 +56,7 @@ const MusicPlayer = () => {
         audio.removeEventListener('loadeddata', setAudioData);
         audio.removeEventListener('timeupdate', setAudioTime);
         audio.removeEventListener('ended', handleAudioEnd);
+        audio.removeEventListener('error', handleError);
       };
     }
   }, []);
@@ -62,6 +77,11 @@ const MusicPlayer = () => {
             })
             .catch(error => {
               console.error("Playback failed:", error);
+              toast({
+                title: "Oynatma hatası",
+                description: "Şarkı oynatılamadı. Lütfen tekrar deneyin.",
+                variant: "destructive"
+              });
               setIsPlaying(false);
             });
         }
@@ -108,7 +128,7 @@ const MusicPlayer = () => {
         {/* Album Cover - Placed on top with medium size */}
         <div className="w-48 h-48 rounded-lg overflow-hidden mb-6">
           <img 
-            src="/lovable-uploads/7d0987f3-26b7-4cc1-8410-eb5931612915.png" 
+            src="/lovable-uploads/8995c772-0203-4cb0-802d-a92d1b6c4c75.png" 
             alt="Müzik Kapağı" 
             className="w-full h-full object-cover"
           />
@@ -173,8 +193,7 @@ const MusicPlayer = () => {
         </div>
       </div>
       
-      <audio ref={audioRef} preload="auto">
-        {/* Update this source with the correct MP3 file path after downloading from mp3semti.com */}
+      <audio ref={audioRef} preload="metadata">
         <source src="/lovable-uploads/diger-yarim.mp3" type="audio/mp3" />
         Tarayıcınız audio etiketini desteklemiyor.
       </audio>
