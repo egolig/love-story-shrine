@@ -85,7 +85,7 @@ const LoveGame = () => {
 
   // Oyunu sıfırla
   const resetGame = () => {
-    const cardValues = ['❤️', '💖', '💕', '💗'];
+    const cardValues = ['❤️', '💖'];
     const duplicatedValues = [...cardValues, ...cardValues];
     
     const shuffledCards = duplicatedValues
@@ -119,12 +119,12 @@ const LoveGame = () => {
             </div>
           ) : (
             <>
-              <div className="grid grid-cols-4 gap-3 md:gap-4 mx-auto max-w-sm">
+              <div className="grid grid-cols-2 gap-3 md:gap-4 mx-auto max-w-xs">
                 {cards.map(card => (
                   <div
                     key={card.id}
                     onClick={() => handleCardClick(card.id)}
-                    className={`aspect-square flex items-center justify-center text-2xl md:text-3xl rounded-lg cursor-pointer transition-all duration-300 ${
+                    className={`aspect-square flex items-center justify-center text-3xl md:text-4xl rounded-lg cursor-pointer transition-all duration-300 ${
                       card.flipped || card.matched 
                         ? 'bg-white shadow-md rotate-0'
                         : 'bg-primary text-primary-foreground rotate-y-180'

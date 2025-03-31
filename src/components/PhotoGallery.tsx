@@ -31,7 +31,6 @@ const PhotoGallery = () => {
 
   return (
     <div className="my-12">
-      <h2 className="text-center text-2xl font-bold text-love-500 mb-8">Anılarımız</h2>
       <div className="grid grid-cols-1 gap-16">
         {photos.map((photo, index) => (
           <motion.div 
