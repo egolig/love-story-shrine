@@ -1,7 +1,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { Play, Pause, Volume2, VolumeX, SkipBack, AlertCircle } from 'lucide-react';
+import { Play, Pause, Volume2, VolumeX, SkipBack } from 'lucide-react';
 import { toast } from '@/components/ui/use-toast';
 import { Progress } from '@/components/ui/progress';
 import { Slider } from '@/components/ui/slider';
@@ -20,7 +20,8 @@ const MusicPlayer = () => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [loadError, setLoadError] = useState(false);
   const [volume, setVolume] = useState(1);
-  const [useFallback, setUseFallback] = useState(false);
+  // Setting useFallback to true by default to avoid loading issues
+  const [useFallback, setUseFallback] = useState(true);
   
   const audioRef = useRef<HTMLAudioElement | null>(null);
   
@@ -36,8 +37,8 @@ const MusicPlayer = () => {
     audio.addEventListener('error', handleError);
     audio.addEventListener('canplaythrough', handleCanPlayThrough);
     
-    // Try the imported song file first
-    audio.src = songFile;
+    // Use fallback URL directly
+    audio.src = FALLBACK_AUDIO_URL;
     
     // Try to load the audio
     audio.load();
@@ -57,21 +58,6 @@ const MusicPlayer = () => {
       }
     };
   }, []);
-
-  // Try fallback audio if main source fails
-  useEffect(() => {
-    if (loadError && !useFallback && audioRef.current) {
-      console.log("Trying fallback audio source");
-      setUseFallback(true);
-      setLoadError(false);
-      
-      const audio = audioRef.current;
-      audio.src = FALLBACK_AUDIO_URL;
-      audio.load();
-      
-      // Toast notification removed
-    }
-  }, [loadError, useFallback]);
   
   const handleLoadedMetadata = () => {
     const audio = audioRef.current;
@@ -95,34 +81,17 @@ const MusicPlayer = () => {
     if (audioRef.current) {
       audioRef.current.currentTime = 0;
     }
-    
-    // Toast notification removed
   };
   
   const handleError = (e: Event) => {
     console.error("Audio loading error:", e);
-    
-    if (!useFallback) {
-      setLoadError(true);
-    } else {
-      // Both sources failed
-      setLoadError(true);
-      setIsLoaded(false);
-      
-      toast({
-        title: "Oynatma hatası",
-        description: "Şarkı yüklenirken bir sorun oluştu. Lütfen daha sonra tekrar deneyin.",
-        variant: "destructive"
-      });
-    }
+    setLoadError(true);
   };
   
   const handleCanPlayThrough = () => {
     console.log("Audio can play through");
     setIsLoaded(true);
     setLoadError(false);
-    
-    // Toast notification removed
   };
   
   const togglePlay = () => {
@@ -208,8 +177,8 @@ const MusicPlayer = () => {
   // Calculate progress percentage for the Progress component
   const progressPercentage = duration > 0 ? (currentTime / duration) * 100 : 0;
   
-  // If loading fails or while loading, offer a direct audio element fallback
-  if (loadError) {
+  // Use a simple audio element if we're still trying to load
+  if (!isLoaded && !loadError) {
     return (
       <div className="bg-white rounded-xl shadow-md overflow-hidden my-8">
         <div className="p-6 flex flex-col items-center">
@@ -224,17 +193,10 @@ const MusicPlayer = () => {
           <div className="w-full">
             <h3 className="font-medium font-sans text-center text-xl mb-4">ATE - Diğer Yarım</h3>
             
-            <div className="flex items-center justify-center gap-2 text-amber-500 mb-4">
-              <AlertCircle size={16} />
-              <span className="text-sm">Gelişmiş oynatıcı yüklenemedi. Basit oynatıcı kullanılıyor.</span>
+            <div className="flex items-center justify-center gap-2 text-blue-500 mb-4">
+              <div className="animate-spin h-4 w-4 border-2 border-blue-500 rounded-full border-t-transparent"></div>
+              <span className="text-sm">Şarkı yükleniyor...</span>
             </div>
-            
-            <audio controls className="w-full">
-              <source src={FALLBACK_AUDIO_URL} type="audio/mpeg" />
-              <source src={songFile} type="audio/mpeg" />
-              <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg" />
-              <p>Tarayıcınız audio etiketi desteklemiyor.</p>
-            </audio>
           </div>
         </div>
       </div>
@@ -244,7 +206,6 @@ const MusicPlayer = () => {
   return (
     <div className="bg-white rounded-xl shadow-md overflow-hidden my-8">
       <div className="p-6 flex flex-col items-center">
-        {/* Album Cover - Updated to use the uploaded image */}
         <div className="w-48 h-48 rounded-lg overflow-hidden mb-6">
           <img 
             src="/lovable-uploads/cbb7681a-ed22-49c1-aa4c-19cea252676f.png" 
@@ -255,19 +216,6 @@ const MusicPlayer = () => {
         
         <div className="w-full">
           <h3 className="font-medium font-sans text-center text-xl mb-4">ATE - Diğer Yarım</h3>
-          
-          {useFallback && isLoaded && (
-            <div className="flex items-center justify-center gap-2 text-blue-500 mb-4">
-              <span className="text-sm">Çevrimiçi kaynak kullanılıyor</span>
-            </div>
-          )}
-          
-          {!isLoaded && !loadError && (
-            <div className="flex items-center justify-center gap-2 text-blue-500 mb-4">
-              <div className="animate-spin h-4 w-4 border-2 border-blue-500 rounded-full border-t-transparent"></div>
-              <span className="text-sm">Şarkı yükleniyor...</span>
-            </div>
-          )}
           
           <div className="mb-4 w-full">
             <div className="flex justify-between text-xs text-gray-500">
