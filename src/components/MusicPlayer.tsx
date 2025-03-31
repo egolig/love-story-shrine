@@ -1,4 +1,3 @@
-
 import { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Play, Pause, Volume2, VolumeX, SkipBack, AlertCircle } from 'lucide-react';
@@ -13,8 +12,8 @@ const MusicPlayer = () => {
   const [loadError, setLoadError] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   
-  // ATE - Diğer Yarım şarkısı için internet üzerinden erişilebilen yeni URL kullanıyoruz
-  const audioUrl = 'https://mp3indirdur.life/dinle/Ate-Diger-Yarim-221552';
+  // Using a direct mp3 file URL for ATE - Diğer Yarım
+  const audioUrl = 'https://audio.jukehost.co.uk/S9rSvZCCFUaHzI3pSDZiD6acBsiXabtk';
   
   useEffect(() => {
     // Create audio element directly in the component
