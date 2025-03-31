@@ -26,6 +26,7 @@ const HomePage = () => {
       </header>
 
       <main className="container mx-auto px-4 py-8 max-w-2xl">
+        <LoveCounter />
         <div className="bg-white p-6 rounded-2xl shadow-lg mb-8">
           <h2 className="text-2xl text-center mb-4 text-pink-600 font-bold">Sevgilim,</h2>
           <p className="text-center mb-6 text-lg">
@@ -35,8 +36,7 @@ const HomePage = () => {
             Seni çok seviyorum.
           </p>
         </div>
-
-        <LoveCounter />
+        
         <MusicPlayer />
         <LocationMap />
         <PhotoGallery />
