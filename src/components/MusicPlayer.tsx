@@ -1,10 +1,11 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { Play, Pause, Volume2, VolumeX, SkipBack } from 'lucide-react';
+import { Play, Pause, Volume2, VolumeX, SkipBack, SkipForward } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 import { Slider } from '@/components/ui/slider';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { toast } from '@/hooks/use-toast';
 
 // Import the audio file, but we'll use a public URL in production
 import songFile from '../assets/Ate - Diğer Yarım (Official Video).mp3';
@@ -17,42 +18,20 @@ const MusicPlayer = () => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [volume, setVolume] = useState(1);
   const [audioError, setAudioError] = useState<string | null>(null);
+  const [audioSource, setAudioSource] = useState<string | null>(null);
   
   const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  // List of possible audio sources to try
+  const audioSources = [
+    '/lovable-uploads/ate-diger-yarim.mp3',
+    '/ate-diger-yarim.mp3',
+    songFile
+  ];
   
   useEffect(() => {
     // Create audio element
     const audio = new Audio();
-    
-    // Set the audio source with both production and development options
-    try {
-      // For production, try to use the public folder
-      const publicAudioUrl = '/lovable-uploads/ate-diger-yarim.mp3';
-      
-      // Try to load from the public URL first (for production)
-      fetch(publicAudioUrl, { method: 'HEAD' })
-        .then(response => {
-          if (response.ok) {
-            console.log("Using public audio URL");
-            audio.src = publicAudioUrl;
-          } else {
-            // Fall back to imported file (for development)
-            console.log("Using imported audio file");
-            audio.src = songFile;
-          }
-          audio.load();
-        })
-        .catch(() => {
-          // Fall back to imported file if fetch fails
-          console.log("Fetch failed, using imported audio file");
-          audio.src = songFile;
-          audio.load();
-        });
-    } catch (error) {
-      console.error("Error setting up audio:", error);
-      setAudioError("Failed to load audio file");
-    }
-    
     audioRef.current = audio;
     
     // Set up event listeners
@@ -61,6 +40,9 @@ const MusicPlayer = () => {
     audio.addEventListener('ended', handleEnded);
     audio.addEventListener('canplaythrough', handleCanPlayThrough);
     audio.addEventListener('error', handleAudioError);
+    
+    // Try to load audio from the first source
+    tryLoadAudio(0);
     
     return () => {
       // Clean up event listeners
@@ -77,16 +59,69 @@ const MusicPlayer = () => {
       }
     };
   }, []);
+
+  // Function to try loading audio from different sources
+  const tryLoadAudio = (index: number) => {
+    if (index >= audioSources.length) {
+      console.error("All audio sources failed to load");
+      setAudioError("Failed to load audio from any source");
+      toast({
+        title: "Audio Error",
+        description: "Unable to load the audio file. Please try again later.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    const source = audioSources[index];
+    console.log(`Trying audio source ${index + 1}/${audioSources.length}:`, source);
+    
+    // For URL sources, check if they exist first
+    if (typeof source === 'string' && source.startsWith('/')) {
+      fetch(source, { method: 'HEAD' })
+        .then(response => {
+          if (response.ok) {
+            console.log(`Source ${index + 1} exists, using:`, source);
+            loadAudioSource(source);
+          } else {
+            console.log(`Source ${index + 1} failed (404), trying next source`);
+            tryLoadAudio(index + 1);
+          }
+        })
+        .catch(error => {
+          console.error(`Error checking source ${index + 1}:`, error);
+          tryLoadAudio(index + 1);
+        });
+    } else {
+      // For imported file, try directly
+      loadAudioSource(source);
+    }
+  };
+
+  // Function to set the audio source and load it
+  const loadAudioSource = (source: string) => {
+    if (!audioRef.current) return;
+    
+    try {
+      audioRef.current.src = source;
+      setAudioSource(source);
+      audioRef.current.load();
+      setAudioError(null);
+    } catch (error) {
+      console.error("Error loading audio source:", error);
+      setAudioError("Failed to load audio file");
+    }
+  };
   
   const handleAudioError = (e: Event) => {
     const audio = e.target as HTMLAudioElement;
     console.error("Audio error:", audio.error);
     
-    // Try alternative source if there's an error
-    if (audio.src.includes('lovable-uploads') && audioRef.current) {
-      console.log("Trying imported file as fallback");
-      audioRef.current.src = songFile;
-      audioRef.current.load();
+    // If current source failed, try the next one
+    const currentIndex = audioSources.findIndex(source => source === audioSource);
+    if (currentIndex !== -1 && currentIndex < audioSources.length - 1) {
+      console.log(`Source ${currentIndex + 1} failed to play, trying next source`);
+      tryLoadAudio(currentIndex + 1);
       return;
     }
     
@@ -136,6 +171,12 @@ const MusicPlayer = () => {
       audio.play().catch(error => {
         console.error("Playback error:", error);
         setAudioError(`Playback error: ${error.message}`);
+        
+        // If playback fails, try alternative source
+        const currentIndex = audioSources.findIndex(source => source === audioSource);
+        if (currentIndex !== -1 && currentIndex < audioSources.length - 1) {
+          tryLoadAudio(currentIndex + 1);
+        }
       });
       setIsPlaying(true);
       console.log("Audio playing");
