@@ -33,7 +33,7 @@ const LoginPage = () => {
         
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-purple-500 mb-2 animate-fade-in">Aşkımızın Sitesi</h1>
-          <p className="text-gray-300">3. ay özel kutlamamıza hoş geldin</p>
+          <p className="text-gray-300">İrem Atalar'ın Özel Sitesi</p>
         </div>
         
         <Card className="bg-gray-900/80 border border-gray-800 backdrop-blur-sm shadow-xl">

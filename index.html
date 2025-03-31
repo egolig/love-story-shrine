@@ -1,23 +1,39 @@
 
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Özel Anılarımız - 3. Ay Kutlaması</title>
-    <meta name="description" content="İrem için özel hazırlanmış 3. ay kutlama sayfası" />
-    <meta name="author" content="Senin Sevgilin" />
+    <title>İrem Atalar'ın Özel Sitesi</title>
+    <style>
+      @keyframes heart-beat {
+        0% {
+          transform: scale(1);
+        }
+        25% {
+          transform: scale(1.1);
+        }
+        50% {
+          transform: scale(1);
+        }
+        75% {
+          transform: scale(1.1);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+      
+      .animate-heart-beat {
+        animation: heart-beat 1.5s infinite;
+      }
 
-    <meta property="og:title" content="Özel Anılarımız - 3. Ay Kutlaması" />
-    <meta property="og:description" content="İrem için özel hazırlanmış 3. ay kutlama sayfası" />
-    <meta property="og:type" content="website" />
-    <meta property="og:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
-
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:site" content="@lovable_dev" />
-    <meta name="twitter:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
+      .rotate-y-180 {
+        transform: rotateY(180deg);
+      }
+    </style>
   </head>
-
   <body>
     <div id="root"></div>
     <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>

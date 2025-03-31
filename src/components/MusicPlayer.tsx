@@ -1,3 +1,4 @@
+
 import { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Play, Pause, Volume2, VolumeX, SkipBack, AlertCircle } from 'lucide-react';
@@ -68,10 +69,7 @@ const MusicPlayer = () => {
       audio.src = FALLBACK_AUDIO_URL;
       audio.load();
       
-      toast({
-        title: "Alternatif kaynak deneniyor",
-        description: "Yerel ses dosyası yüklenemedi, çevrimiçi kaynak deneniyor.",
-      });
+      // Toast notification removed
     }
   }, [loadError, useFallback]);
   
@@ -98,10 +96,7 @@ const MusicPlayer = () => {
       audioRef.current.currentTime = 0;
     }
     
-    toast({
-      title: "Parça bitti",
-      description: "Şarkı çalma tamamlandı.",
-    });
+    // Toast notification removed
   };
   
   const handleError = (e: Event) => {
@@ -127,10 +122,7 @@ const MusicPlayer = () => {
     setIsLoaded(true);
     setLoadError(false);
     
-    toast({
-      title: "Müzik yüklendi",
-      description: "Şarkı başarıyla yüklendi, çalmaya hazır.",
-    });
+    // Toast notification removed
   };
   
   const togglePlay = () => {

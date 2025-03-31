@@ -47,7 +47,7 @@ const LoveGame = () => {
     if (newFlippedCards.length === 2) {
       const [firstCardId, secondCardId] = newFlippedCards;
       
-      // Hamle sayısını artır
+      // Hamle sayısını artır (ama göstermeyelim)
       setMoves(moves + 1);
       
       // Kartlar eşleşiyor mu?
@@ -64,10 +64,7 @@ const LoveGame = () => {
           const allMatched = updatedCards.every(card => card.matched);
           if (allMatched) {
             setGameCompleted(true);
-            toast({
-              title: "Tebrikler Sevgilim!",
-              description: "Ödül olarak benim sonsuz aşkımı ve öpücüğümü kazandın!",
-            });
+            // Toast bildirimi kaldırıldı
           }
         }, 500);
       } else {
@@ -134,9 +131,7 @@ const LoveGame = () => {
                   </div>
                 ))}
               </div>
-              <div className="text-center mt-4">
-                <p className="text-pink-500">Hamle: {moves}</p>
-              </div>
+              {/* Hamle sayacı kaldırıldı */}
             </>
           )}
         </CardContent>
