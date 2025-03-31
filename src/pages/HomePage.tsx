@@ -13,10 +13,10 @@ const HomePage = () => {
   }, []);
 
   return (
-    <div className={`transition-opacity duration-1000 ${loaded ? 'opacity-100' : 'opacity-0'} bg-love-300 min-h-screen`}>
+    <div className={`transition-opacity duration-1000 ${loaded ? 'opacity-100' : 'opacity-0'} min-h-screen`}>
       <header className="bg-white shadow-md py-6 rounded-b-3xl">
         <div className="container mx-auto px-4">
-          <h1 className="text-3xl md:text-4xl text-center font-bold text-love-500">
+          <h1 className="text-3xl md:text-4xl text-center font-bold text-pink-500">
             Seni Çok Seviyorum
             <br />
             <span className="text-primary">İrem Atalar❤️</span>
@@ -26,7 +26,7 @@ const HomePage = () => {
 
       <main className="container mx-auto px-4 py-8 max-w-2xl">
         <div className="bg-white p-6 rounded-2xl shadow-lg mb-8">
-          <h2 className="text-2xl text-center mb-4 text-love-600 font-bold">Sevgilim,</h2>
+          <h2 className="text-2xl text-center mb-4 text-pink-600 font-bold">Sevgilim,</h2>
           <p className="text-center mb-6 text-lg">
             Bu üç aylık yolculuğumuzda seninle geçirdiğim her anın kıymetini biliyorum. 
             Hayatıma girdiğin günden beri her şey daha güzel, daha anlamlı. 

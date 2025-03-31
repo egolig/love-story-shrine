@@ -102,20 +102,20 @@ const LoveGame = () => {
     <div className="my-8">
       <Card>
         <CardHeader>
-          <CardTitle className="text-center">
+          <CardTitle className="text-center text-pink-500">
             {gameCompleted ? 'Tebrikler Sevgilim! 🎉' : 'Oyunu Tamamla Ödülü Kap'}
           </CardTitle>
         </CardHeader>
         <CardContent>
           {gameCompleted ? (
             <div className="text-center space-y-4">
-              <p className="text-lg font-medium text-love-500">
+              <p className="text-lg font-medium text-pink-500">
                 Ödül olarak benim sonsuz aşkımı ve öpücüğümü kazandın!
               </p>
               <div className="flex justify-center">
                 <span className="text-6xl animate-heart-beat">❤️</span>
               </div>
-              <Button onClick={resetGame} className="mt-4">Tekrar Oyna</Button>
+              <Button onClick={resetGame} className="mt-4 bg-pink-500 hover:bg-pink-600">Tekrar Oyna</Button>
             </div>
           ) : (
             <>
@@ -127,7 +127,7 @@ const LoveGame = () => {
                     className={`aspect-square flex items-center justify-center text-3xl md:text-4xl rounded-lg cursor-pointer transition-all duration-300 ${
                       card.flipped || card.matched 
                         ? 'bg-white shadow-md rotate-0'
-                        : 'bg-primary text-primary-foreground rotate-y-180'
+                        : 'bg-pink-500 text-white rotate-y-180'
                     }`}
                   >
                     {(card.flipped || card.matched) ? card.value : ''}
@@ -135,7 +135,7 @@ const LoveGame = () => {
                 ))}
               </div>
               <div className="text-center mt-4">
-                <p>Hamle: {moves}</p>
+                <p className="text-pink-500">Hamle: {moves}</p>
               </div>
             </>
           )}

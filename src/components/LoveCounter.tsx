@@ -37,7 +37,7 @@ const LoveCounter = () => {
 
   return (
     <div className="my-8">
-      <h3 className="text-center text-xl font-script text-love-500 mb-4">
+      <h3 className="text-center text-xl font-medium text-pink-500 mb-4">
         Mutluluğumun başladığı günden beri:
       </h3>
       
@@ -81,7 +81,7 @@ const LoveCounter = () => {
       <div className="my-6">
         <div className="w-full flex justify-center">
           <svg xmlns="http://www.w3.org/2000/svg" width="250" height="30" viewBox="0 0 250 30" fill="none">
-            <path d="M1 15C1 15 50 -5 125 15C200 35 249 15 249 15" stroke="#D946EF" strokeOpacity="0.5" strokeWidth="2" strokeLinecap="round"/>
+            <path d="M1 15C1 15 50 -5 125 15C200 35 249 15 249 15" stroke="#EC4899" strokeOpacity="0.5" strokeWidth="2" strokeLinecap="round"/>
           </svg>
         </div>
       </div>
