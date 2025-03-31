@@ -3,17 +3,12 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { X } from 'lucide-react';
-import { 
-  Dialog, 
-  DialogContent, 
-  DialogDescription,
-  DialogTitle 
-} from '@/components/ui/dialog';
 
 const PhotoGallery = () => {
   const isMobile = useIsMobile();
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [showNote, setShowNote] = useState(false);
   const [currentNote, setCurrentNote] = useState('');
+  const [notePosition, setNotePosition] = useState({ x: 0, y: 0 });
   
   const photos = [
     {
@@ -48,13 +43,25 @@ const PhotoGallery = () => {
     },
   ];
 
-  const handlePhotoClick = (note: string) => {
+  const handlePhotoClick = (note: string, event: React.MouseEvent) => {
+    // Calculate position for note (slightly offset from click position)
+    const posX = event.clientX - 150;
+    const posY = event.clientY - 100;
+    
     setCurrentNote(note);
-    setIsDialogOpen(true);
+    setNotePosition({ x: posX, y: posY });
+    setShowNote(true);
+  };
+
+  // Handle closing note when clicking anywhere on the page
+  const handleClickOutside = () => {
+    if (showNote) {
+      setShowNote(false);
+    }
   };
 
   return (
-    <div className="my-12">
+    <div className="my-12" onClick={handleClickOutside}>
       <div className="grid grid-cols-1 gap-32 md:gap-24">
         {photos.map((photo, index) => (
           <motion.div 
@@ -67,7 +74,10 @@ const PhotoGallery = () => {
           >
             <div 
               className={`polaroid-frame ${isMobile ? 'w-full max-w-[90vw]' : 'max-w-md'} transform rotate-1 hover:rotate-0 transition-all duration-300 cursor-pointer`}
-              onClick={() => handlePhotoClick(photo.loveNote)}
+              onClick={(e) => {
+                e.stopPropagation();
+                handlePhotoClick(photo.loveNote, e);
+              }}
             >
               <div className="bg-white p-4 pt-5 shadow-xl rounded-sm">
                 <img 
@@ -85,21 +95,33 @@ const PhotoGallery = () => {
         ))}
       </div>
 
-      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="bg-white/95 backdrop-blur-md border border-pink-200 relative">
-          <DialogTitle className="sr-only">Aşk Notu</DialogTitle>
-          <DialogDescription className="text-gray-800 text-lg text-center font-medium">
-            {currentNote}
-          </DialogDescription>
-          
+      {/* Floating love note */}
+      {showNote && (
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="fixed z-50 max-w-xs w-full p-5 bg-white rounded-lg shadow-xl border border-pink-100"
+          style={{ 
+            top: isMobile ? '50%' : notePosition.y, 
+            left: isMobile ? '50%' : notePosition.x,
+            transform: isMobile ? 'translate(-50%, -50%)' : 'none' 
+          }}
+          onClick={(e) => e.stopPropagation()}
+        >
           <button
-            onClick={() => setIsDialogOpen(false)}
-            className="absolute right-4 top-4 p-1 rounded-full bg-pink-100 hover:bg-pink-200 transition-colors"
+            onClick={(e) => {
+              e.stopPropagation();
+              setShowNote(false);
+            }}
+            className="absolute right-2 top-2 p-1 rounded-full bg-pink-50 hover:bg-pink-100 transition-colors"
           >
             <X className="h-4 w-4 text-pink-500" />
           </button>
-        </DialogContent>
-      </Dialog>
+          <p className="text-center text-gray-800 font-medium pt-3 pb-1" style={{ fontFamily: "'Caveat', cursive" }}>
+            {currentNote}
+          </p>
+        </motion.div>
+      )}
     </div>
   );
 };
