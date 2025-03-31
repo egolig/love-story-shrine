@@ -12,7 +12,9 @@ const MusicPlayer = () => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [loadError, setLoadError] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  const audioUrl = '/lovable-uploads/diger-yarim.mp3';
+  
+  // ATE - Diğer Yarım şarkısı için internet üzerinden erişilebilen bir URL kullanıyoruz
+  const audioUrl = 'https://cdn.mp3indirdur.mobi/mp3/Ate-Diger-Yarim.mp3';
   
   useEffect(() => {
     // Create audio element directly in the component
@@ -26,6 +28,10 @@ const MusicPlayer = () => {
       setDuration(audio.duration);
       setIsLoaded(true);
       setLoadError(false);
+      toast({
+        title: "Müzik yüklendi",
+        description: "Şarkı başarıyla yüklendi, çalmaya hazır.",
+      });
     };
     
     const handleTimeUpdate = () => {
@@ -46,7 +52,7 @@ const MusicPlayer = () => {
       setIsLoaded(false);
       toast({
         title: "Oynatma hatası",
-        description: "Müzik dosyası yüklenemedi. Lütfen daha sonra tekrar deneyin.",
+        description: "Müzik dosyası yüklenemedi. İnternet bağlantınızı kontrol edin.",
         variant: "destructive"
       });
     };
@@ -168,7 +174,7 @@ const MusicPlayer = () => {
           {loadError && (
             <div className="flex items-center justify-center gap-2 text-red-500 mb-4">
               <AlertCircle size={16} />
-              <span className="text-sm">Şarkı yüklenirken bir sorun oluştu</span>
+              <span className="text-sm">Şarkı yüklenirken bir sorun oluştu. İnternet bağlantınızı kontrol edin.</span>
             </div>
           )}
           
