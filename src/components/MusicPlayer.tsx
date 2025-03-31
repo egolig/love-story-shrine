@@ -1,4 +1,3 @@
-
 import { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Play, Pause, Volume2, VolumeX, SkipBack, SkipForward } from 'lucide-react';
@@ -7,7 +6,7 @@ import { Slider } from '@/components/ui/slider';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { toast } from '@/hooks/use-toast';
 
-// Import the audio file, but we'll use a public URL in production
+// Import the audio file, but we'll use GitHub URL in production
 import songFile from '../assets/Ate - Diğer Yarım (Official Video).mp3';
 
 const MusicPlayer = () => {
@@ -22,8 +21,10 @@ const MusicPlayer = () => {
   
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
-  // List of possible audio sources to try
+  // List of possible audio sources to try, prioritizing GitHub URLs
   const audioSources = [
+    'https://raw.githubusercontent.com/passerbyzju/ate-diger-yarim/main/ate-diger-yarim.mp3',
+    'https://github.com/passerbyzju/ate-diger-yarim/raw/main/ate-diger-yarim.mp3',
     '/lovable-uploads/ate-diger-yarim.mp3',
     '/ate-diger-yarim.mp3',
     songFile
@@ -77,14 +78,14 @@ const MusicPlayer = () => {
     console.log(`Trying audio source ${index + 1}/${audioSources.length}:`, source);
     
     // For URL sources, check if they exist first
-    if (typeof source === 'string' && source.startsWith('/')) {
+    if (typeof source === 'string' && (source.startsWith('/') || source.startsWith('http'))) {
       fetch(source, { method: 'HEAD' })
         .then(response => {
           if (response.ok) {
             console.log(`Source ${index + 1} exists, using:`, source);
             loadAudioSource(source);
           } else {
-            console.log(`Source ${index + 1} failed (404), trying next source`);
+            console.log(`Source ${index + 1} failed (${response.status}), trying next source`);
             tryLoadAudio(index + 1);
           }
         })
@@ -106,6 +107,7 @@ const MusicPlayer = () => {
       audioRef.current.src = source;
       setAudioSource(source);
       audioRef.current.load();
+      audioRef.current.crossOrigin = "anonymous"; // Add CORS support
       setAudioError(null);
     } catch (error) {
       console.error("Error loading audio source:", error);
