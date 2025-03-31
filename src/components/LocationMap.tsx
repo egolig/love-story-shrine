@@ -1,8 +1,11 @@
 
 import React, { useEffect, useRef } from 'react';
+import { useIsMobile } from '@/hooks/use-mobile';
+import { motion } from 'framer-motion';
 
 const LocationMap = () => {
   const mapRef = useRef<HTMLDivElement>(null);
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     // Google Maps embed kodunu oluştur
@@ -21,12 +24,28 @@ const LocationMap = () => {
   }, []);
 
   return (
-    <div className="my-8">
-      <h3 className="text-center text-xl font-script text-love-500 mb-4">
-        Seninle İlk Tanıştığımız Yer:
-      </h3>
-      <div className="rounded-xl overflow-hidden shadow-lg" ref={mapRef}></div>
-    </div>
+    <motion.div 
+      className="my-8" 
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-100px" }}
+      transition={{ duration: 0.5 }}
+    >
+      <div className="flex justify-center min-h-screen md:min-h-0 items-center">
+        <div className={`polaroid-frame ${isMobile ? 'w-full max-w-[90vw]' : 'max-w-md'} transform rotate-1 hover:rotate-0 transition-all duration-300`}>
+          <div className="bg-white p-4 pt-5 shadow-xl rounded-sm">
+            <div 
+              ref={mapRef} 
+              className="w-full h-auto" 
+              style={{ minHeight: isMobile ? '50vh' : '350px' }}
+            ></div>
+            <div className="pt-5 pb-4 px-3">
+              <p className="text-center text-gray-800 text-lg">Seni İlk Gördüğüm Yer</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </motion.div>
   );
 };
 

@@ -1,7 +1,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { Play, Pause, Volume2, VolumeX, SkipBack, SkipForward } from 'lucide-react';
+import { Play, Pause, Volume2, VolumeX, SkipBack } from 'lucide-react';
 
 const MusicPlayer = () => {
   const [isPlaying, setIsPlaying] = useState(false);
@@ -115,7 +115,7 @@ const MusicPlayer = () => {
           </div>
           
           <div className="flex-grow">
-            <h3 className="font-medium font-sans">Yüksek Sadakat - Yüreğim</h3>
+            <h3 className="font-medium font-sans">ATE - Diğer Yarım</h3>
             <p className="text-sm text-gray-500 font-sans">YouTube'dan MP3</p>
             
             <div className="mt-2 w-full">

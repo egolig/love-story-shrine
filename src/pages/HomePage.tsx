@@ -4,6 +4,7 @@ import LoveCounter from '@/components/LoveCounter';
 import LocationMap from '@/components/LocationMap';
 import PhotoGallery from '@/components/PhotoGallery';
 import LoveGame from '@/components/LoveGame';
+import MusicPlayer from '@/components/MusicPlayer';
 
 const HomePage = () => {
   const [loaded, setLoaded] = useState(false);
@@ -36,6 +37,7 @@ const HomePage = () => {
         </div>
 
         <LoveCounter />
+        <MusicPlayer />
         <LocationMap />
         <PhotoGallery />
         <LoveGame />
