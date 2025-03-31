@@ -1,3 +1,4 @@
+
 import { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Play, Pause, Volume2, VolumeX, SkipBack, AlertCircle } from 'lucide-react';
@@ -10,129 +11,202 @@ const MusicPlayer = () => {
   const [currentTime, setCurrentTime] = useState(0);
   const [isLoaded, setIsLoaded] = useState(false);
   const [loadError, setLoadError] = useState(false);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
   
-  // Using a direct mp3 file URL for ATE - Diğer Yarım
-  const audioUrl = 'https://audio.jukehost.co.uk/S9rSvZCCFUaHzI3pSDZiD6acBsiXabtk';
+  // YouTube kullanımına geçiyoruz - daha güvenilir çalışacak
+  const youtubeVideoId = "vRf03KHgL_s"; // ATE - Diğer Yarım YouTube videosu
+  const iframeRef = useRef<HTMLIFrameElement | null>(null);
+  
+  // YouTube API için gerekli değişkenler
+  const [ytPlayer, setYtPlayer] = useState<any>(null);
+  const [ytPlayerReady, setYtPlayerReady] = useState(false);
   
   useEffect(() => {
-    // Create audio element directly in the component
-    const audio = new Audio(audioUrl);
-    audioRef.current = audio;
+    // YouTube API'sini yükleme
+    const tag = document.createElement('script');
+    tag.src = "https://www.youtube.com/iframe_api";
+    const firstScriptTag = document.getElementsByTagName('script')[0];
+    firstScriptTag.parentNode?.insertBefore(tag, firstScriptTag);
     
-    console.log("Creating new audio element with source:", audioUrl);
+    // Global YouTube API fonksiyonunu tanımlama
+    (window as any).onYouTubeIframeAPIReady = () => {
+      console.log("YouTube API hazır");
+      initializeYouTubePlayer();
+    };
     
-    const handleLoadedData = () => {
-      console.log("Audio loaded successfully, duration:", audio.duration);
-      setDuration(audio.duration);
-      setIsLoaded(true);
-      setLoadError(false);
+    return () => {
+      // API hazır olduğunda tetiklenecek fonksiyonu temizle
+      (window as any).onYouTubeIframeAPIReady = null;
+      
+      // Player'ı temizle
+      if (ytPlayer && ytPlayerReady) {
+        try {
+          ytPlayer.destroy();
+        } catch (error) {
+          console.error("YouTube player temizlenirken hata:", error);
+        }
+      }
+    };
+  }, []);
+  
+  const initializeYouTubePlayer = () => {
+    if (!(window as any).YT) {
+      console.log("YouTube API henüz yüklenmedi, 2 saniye sonra tekrar denenecek");
+      setTimeout(initializeYouTubePlayer, 2000);
+      return;
+    }
+    
+    try {
+      console.log("YouTube player oluşturuluyor");
+      const player = new (window as any).YT.Player('youtube-player', {
+        height: '0',
+        width: '0',
+        videoId: youtubeVideoId,
+        playerVars: {
+          'autoplay': 0,
+          'controls': 0,
+          'rel': 0,
+          'showinfo': 0
+        },
+        events: {
+          'onReady': onPlayerReady,
+          'onStateChange': onPlayerStateChange,
+          'onError': onPlayerError
+        }
+      });
+      
+      setYtPlayer(player);
+    } catch (error) {
+      console.error("YouTube player oluşturulurken hata:", error);
+      setLoadError(true);
+      toast({
+        title: "Oynatma hatası",
+        description: "YouTube video yüklenirken bir sorun oluştu.",
+        variant: "destructive"
+      });
+    }
+  };
+  
+  const onPlayerReady = (event: any) => {
+    console.log("YouTube player hazır");
+    setYtPlayerReady(true);
+    setIsLoaded(true);
+    setLoadError(false);
+    
+    // Video süresini al
+    try {
+      const duration = event.target.getDuration();
+      console.log("Video süresi:", duration);
+      setDuration(duration);
+      
       toast({
         title: "Müzik yüklendi",
         description: "Şarkı başarıyla yüklendi, çalmaya hazır.",
       });
-    };
-    
-    const handleTimeUpdate = () => {
-      setCurrentTime(audio.currentTime);
-    };
-    
-    const handleEnded = () => {
+      
+      // İlerleme çubuğunu güncellemek için zamanlayıcı başlat
+      const interval = setInterval(() => {
+        if (ytPlayer && ytPlayerReady) {
+          try {
+            const currentTime = ytPlayer.getCurrentTime();
+            setCurrentTime(currentTime);
+          } catch (e) {
+            console.error("Oynatma zamanı alınırken hata:", e);
+          }
+        }
+      }, 1000);
+      
+      return () => clearInterval(interval);
+    } catch (error) {
+      console.error("Video süresi alınırken hata:", error);
+    }
+  };
+  
+  const onPlayerStateChange = (event: any) => {
+    console.log("Player durumu değişti:", event.data);
+    // YT.PlayerState.ENDED = 0
+    if (event.data === 0) {
       setIsPlaying(false);
       setCurrentTime(0);
-      audio.currentTime = 0;
-    };
-    
-    const handleError = (e: Event) => {
-      console.error("Audio error occurred:", e);
-      console.error("Audio error code:", (e.target as HTMLAudioElement).error?.code);
-      console.error("Audio error message:", (e.target as HTMLAudioElement).error?.message);
-      setLoadError(true);
-      setIsLoaded(false);
-      toast({
-        title: "Oynatma hatası",
-        description: "Müzik dosyası yüklenemedi. İnternet bağlantınızı kontrol edin.",
-        variant: "destructive"
-      });
-    };
-    
-    // Add event listeners
-    audio.addEventListener('loadeddata', handleLoadedData);
-    audio.addEventListener('loadedmetadata', handleLoadedData); 
-    audio.addEventListener('timeupdate', handleTimeUpdate);
-    audio.addEventListener('ended', handleEnded);
-    audio.addEventListener('error', handleError);
-    
-    // Force preload
-    audio.preload = "auto";
-    
-    try {
-      audio.load();
-      console.log("Audio loading started");
-    } catch (err) {
-      console.error("Error loading audio:", err);
     }
     
-    // Cleanup
-    return () => {
-      audio.pause();
-      audio.removeEventListener('loadeddata', handleLoadedData);
-      audio.removeEventListener('loadedmetadata', handleLoadedData);
-      audio.removeEventListener('timeupdate', handleTimeUpdate);
-      audio.removeEventListener('ended', handleEnded);
-      audio.removeEventListener('error', handleError);
-      audioRef.current = null;
-    };
-  }, [audioUrl]);
+    // YT.PlayerState.PLAYING = 1
+    if (event.data === 1) {
+      setIsPlaying(true);
+    }
+    
+    // YT.PlayerState.PAUSED = 2
+    if (event.data === 2) {
+      setIsPlaying(false);
+    }
+  };
+  
+  const onPlayerError = (event: any) => {
+    console.error("YouTube player hatası:", event.data);
+    setLoadError(true);
+    setIsLoaded(false);
+    toast({
+      title: "Oynatma hatası",
+      description: "Video oynatılırken bir sorun oluştu. Lütfen daha sonra tekrar deneyin.",
+      variant: "destructive"
+    });
+  };
   
   const togglePlay = () => {
-    if (!audioRef.current) {
-      console.error("Audio element not available");
+    if (!ytPlayer || !ytPlayerReady) {
+      console.error("YouTube player henüz hazır değil");
       return;
     }
     
-    if (isPlaying) {
-      audioRef.current.pause();
-      setIsPlaying(false);
-      console.log("Audio paused");
-    } else {
-      console.log("Attempting to play audio");
-      const playPromise = audioRef.current.play();
-      
-      if (playPromise !== undefined) {
-        playPromise
-          .then(() => {
-            console.log("Audio playback started successfully");
-            setIsPlaying(true);
-          })
-          .catch(error => {
-            console.error("Playback failed:", error);
-            toast({
-              title: "Oynatma hatası",
-              description: "Şarkı çalınamadı. Lütfen daha sonra tekrar deneyin.",
-              variant: "destructive"
-            });
-            setIsPlaying(false);
-          });
+    try {
+      if (isPlaying) {
+        ytPlayer.pauseVideo();
+        setIsPlaying(false);
+        console.log("Video duraklatıldı");
+      } else {
+        ytPlayer.playVideo();
+        setIsPlaying(true);
+        console.log("Video oynatılmaya başlandı");
       }
+    } catch (error) {
+      console.error("Video oynatma/duraklatma hatası:", error);
+      toast({
+        title: "Oynatma hatası",
+        description: "Şarkı çalınamadı. Lütfen daha sonra tekrar deneyin.",
+        variant: "destructive"
+      });
     }
   };
   
   const toggleMute = () => {
-    if (!audioRef.current) return;
+    if (!ytPlayer || !ytPlayerReady) return;
     
-    audioRef.current.muted = !audioRef.current.muted;
-    setIsMuted(!isMuted);
-    console.log("Audio muted:", !isMuted);
+    try {
+      if (isMuted) {
+        ytPlayer.unMute();
+        setIsMuted(false);
+        console.log("Ses açıldı");
+      } else {
+        ytPlayer.mute();
+        setIsMuted(true);
+        console.log("Ses kapatıldı");
+      }
+    } catch (error) {
+      console.error("Ses açma/kapatma hatası:", error);
+    }
   };
   
   const restart = () => {
-    if (!audioRef.current) return;
+    if (!ytPlayer || !ytPlayerReady) return;
     
-    audioRef.current.currentTime = 0;
-    console.log("Audio restarted");
-    if (!isPlaying) {
-      togglePlay();
+    try {
+      ytPlayer.seekTo(0);
+      console.log("Video başa alındı");
+      if (!isPlaying) {
+        ytPlayer.playVideo();
+        setIsPlaying(true);
+      }
+    } catch (error) {
+      console.error("Videoyu başa alma hatası:", error);
     }
   };
   
@@ -146,12 +220,16 @@ const MusicPlayer = () => {
   };
   
   const handleProgressChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!audioRef.current) return;
+    if (!ytPlayer || !ytPlayerReady) return;
     
     const newTime = parseFloat(e.target.value);
-    setCurrentTime(newTime);
-    audioRef.current.currentTime = newTime;
-    console.log("Seek to:", newTime);
+    try {
+      ytPlayer.seekTo(newTime);
+      setCurrentTime(newTime);
+      console.log("İlerleme zamanı değiştirildi:", newTime);
+    } catch (error) {
+      console.error("İlerleme zamanı değiştirme hatası:", error);
+    }
   };
   
   return (
@@ -168,12 +246,12 @@ const MusicPlayer = () => {
         
         <div className="w-full">
           <h3 className="font-medium font-sans text-center text-xl mb-1">ATE - Diğer Yarım</h3>
-          <p className="text-sm text-gray-500 font-sans text-center mb-4">mp3semti.com</p>
+          <p className="text-sm text-gray-500 font-sans text-center mb-4">Youtube</p>
           
           {loadError && (
             <div className="flex items-center justify-center gap-2 text-red-500 mb-4">
               <AlertCircle size={16} />
-              <span className="text-sm">Şarkı yüklenirken bir sorun oluştu. İnternet bağlantınızı kontrol edin.</span>
+              <span className="text-sm">Şarkı yüklenirken bir sorun oluştu. Lütfen daha sonra tekrar deneyin.</span>
             </div>
           )}
           
@@ -232,6 +310,11 @@ const MusicPlayer = () => {
                 <Volume2 className="h-5 w-5 text-love-600" />
               )}
             </Button>
+          </div>
+          
+          {/* Gizli YouTube iframe - stil ile gizlenmiş */}
+          <div style={{ position: 'absolute', left: '-9999px', top: '-9999px' }}>
+            <div id="youtube-player"></div>
           </div>
         </div>
       </div>
