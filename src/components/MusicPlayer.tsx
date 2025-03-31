@@ -197,7 +197,7 @@ const MusicPlayer = () => {
           <div className="w-48 h-48 rounded-lg overflow-hidden mb-6">
             <img 
               src="/lovable-uploads/1098590261438951476.jpeg" 
-              alt="Müzik Kapağı" 
+              alt="Diğer Yarım - Şarkı Kapağı" 
               className="w-full h-full object-cover"
             />
           </div>
@@ -212,7 +212,7 @@ const MusicPlayer = () => {
             </div>
             
             <audio controls className="w-full">
-              <source src="/assets/sample-audio.mp3" type="audio/mpeg" />
+              <source src={sampleAudio} type="audio/mpeg" />
               <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg" />
               <p>Tarayıcınız audio etiketi desteklemiyor.</p>
             </audio>
@@ -229,7 +229,7 @@ const MusicPlayer = () => {
         <div className="w-48 h-48 rounded-lg overflow-hidden mb-6">
           <img 
             src="/lovable-uploads/1098590261438951476.jpeg" 
-            alt="Müzik Kapağı" 
+            alt="Diğer Yarım - Şarkı Kapağı" 
             className="w-full h-full object-cover"
           />
         </div>
