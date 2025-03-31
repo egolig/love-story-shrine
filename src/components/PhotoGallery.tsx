@@ -1,7 +1,10 @@
 
 import { motion } from 'framer-motion';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 const PhotoGallery = () => {
+  const isMobile = useIsMobile();
+  
   const photos = [
     {
       src: "/lovable-uploads/308daa76-2a5b-40d2-8d94-b47a553a5d66.png",
@@ -31,25 +34,26 @@ const PhotoGallery = () => {
 
   return (
     <div className="my-12">
-      <div className="grid grid-cols-1 gap-16">
+      <div className="grid grid-cols-1 gap-32 md:gap-24">
         {photos.map((photo, index) => (
           <motion.div 
             key={index}
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 0.5, delay: index * 0.1 }}
-            viewport={{ once: true }}
-            className="flex justify-center"
+            className="flex justify-center min-h-screen md:min-h-0 items-center"
           >
-            <div className="polaroid-frame max-w-xs transform rotate-1 hover:rotate-0 transition-all duration-300">
-              <div className="bg-white p-3 pt-4 shadow-xl rounded-sm">
+            <div className={`polaroid-frame ${isMobile ? 'w-full max-w-[90vw]' : 'max-w-md'} transform rotate-1 hover:rotate-0 transition-all duration-300`}>
+              <div className="bg-white p-4 pt-5 shadow-xl rounded-sm">
                 <img 
                   src={photo.src} 
                   alt={`Anımız ${index + 1}`} 
-                  className="w-full h-64 object-cover"
+                  className="w-full h-auto object-cover"
+                  style={{ minHeight: isMobile ? '50vh' : '350px' }}
                 />
-                <div className="pt-4 pb-3 px-2">
-                  <p className="text-center text-gray-800">{photo.caption}</p>
+                <div className="pt-5 pb-4 px-3">
+                  <p className="text-center text-gray-800 text-lg">{photo.caption}</p>
                 </div>
               </div>
             </div>
