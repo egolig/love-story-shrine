@@ -4,15 +4,14 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { useState } from "react";
 import LoginPage from "./components/LoginPage";
 import HomePage from "./pages/HomePage";
 import NotFound from "./pages/NotFound";
 
-const App = () => {
-  // Create a client inside the component to ensure it's created in the component scope
-  const [queryClient] = useState(() => new QueryClient());
+// Create the QueryClient instance outside of the component
+const queryClient = new QueryClient();
 
+const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
