@@ -5,7 +5,7 @@ import { Play, Pause, Volume2, VolumeX, SkipBack } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 import { Slider } from '@/components/ui/slider';
 
-// Import the actual audio file that was uploaded
+// Direct import of the audio file
 import songFile from '../assets/Ate - Diğer Yarım (Official Video).mp3';
 
 const MusicPlayer = () => {
