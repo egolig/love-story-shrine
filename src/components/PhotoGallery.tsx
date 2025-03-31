@@ -89,8 +89,7 @@ const PhotoGallery = () => {
       </div>
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="bg-white/95 backdrop-blur-md border border-pink-200 relative" 
-                       onClick={closeDialog}>
+        <DialogContent className="bg-white/95 backdrop-blur-md border border-pink-200 relative">
           <DialogDescription className="text-gray-800 text-lg text-center">
             {currentNote}
           </DialogDescription>
