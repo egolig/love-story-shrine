@@ -27,17 +27,19 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-[#1A1A1A] bg-pattern">
-      <div className="w-full max-w-md">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 to-black p-4">
+      <div className="w-full max-w-md relative z-10">
+        <div className="absolute inset-0 bg-gradient-to-r from-pink-500 to-purple-600 blur-[100px] opacity-20 rounded-full -z-10"></div>
+        
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-medium text-pink-500 mb-2 animate-fade-in">Aşkımızın Sitesi</h1>
-          <p className="text-pink-300">3. ay özel kutlamamıza hoş geldin</p>
+          <h1 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-purple-500 mb-2 animate-fade-in">Aşkımızın Sitesi</h1>
+          <p className="text-gray-300">3. ay özel kutlamamıza hoş geldin</p>
         </div>
         
-        <Card className="bg-[#222222] border-gray-700 shadow-xl">
-          <CardHeader>
-            <CardTitle className="text-pink-500">Giriş</CardTitle>
-            <CardDescription className="text-pink-300/70">
+        <Card className="bg-gray-900/80 border border-gray-800 backdrop-blur-sm shadow-xl">
+          <CardHeader className="pb-4">
+            <CardTitle className="text-pink-500 text-center">Giriş</CardTitle>
+            <CardDescription className="text-gray-400 text-center">
               Özel anılarımızı görmek için şifre gerekli
             </CardDescription>
           </CardHeader>
@@ -51,10 +53,10 @@ const LoginPage = () => {
                     placeholder="Şifre"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="bg-[#333333] border-gray-700 text-white"
+                    className="bg-gray-800/80 border-gray-700 text-white placeholder:text-gray-500"
                   />
                 </div>
-                <Button type="submit" className="w-full bg-pink-500 hover:bg-pink-600">
+                <Button type="submit" className="w-full bg-gradient-to-r from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700 text-white">
                   Giriş Yap
                 </Button>
               </div>
@@ -63,12 +65,12 @@ const LoginPage = () => {
           <CardFooter>
             <div className="w-full text-center">
               {showHint ? (
-                <p className="text-sm text-pink-300/70">İpucu: bizim şifremiz sevgilim</p>
+                <p className="text-sm text-gray-400">İpucu: bizim şifremiz sevgilim</p>
               ) : (
                 <Button 
                   variant="link" 
                   onClick={() => setShowHint(true)}
-                  className="mx-auto text-sm text-pink-300"
+                  className="mx-auto text-sm text-pink-400 hover:text-pink-300"
                 >
                   İpucu göster
                 </Button>
